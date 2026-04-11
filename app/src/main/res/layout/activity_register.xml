@@ -1,45 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="match_parent"
+
     android:layout_height="match_parent"
+
     android:orientation="vertical"
+
     android:gravity="center"
+
     android:background="#2196F3"
+
     android:padding="24dp">
 
     <EditText
-        android:id="@+id/editTextUsername"
+
+        android:id="@+id/editTextName"
+
         android:layout_width="match_parent"
+
         android:layout_height="wrap_content"
-        android:hint="Username"
+
+        android:hint="Full Name"
+
         android:inputType="textPersonName"
+
         android:padding="12dp"
-        android:background="@android:drawable/edit_text" />
+
+        android:background="@android:drawable/edit_text"/>
 
     <EditText
-        android:id="@+id/editTextPassword"
+
+        android:id="@+id/editTextEmail"
+
         android:layout_width="match_parent"
+
         android:layout_height="wrap_content"
-        android:hint="Password"
-        android:inputType="textPassword"
+
+        android:hint="Email"
+
+        android:inputType="textEmailAddress"
+
         android:padding="12dp"
+
         android:background="@android:drawable/edit_text"
+
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+
+        android:id="@+id/editTextPhone"
+
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+
+        android:hint="Phone Number"
+
+        android:inputType="phone"
+
+        android:padding="12dp"
+
+        android:background="@android:drawable/edit_text"
+
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+
+        android:id="@+id/editTextPassword"
+
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+
+        android:hint="Password"
+
+        android:inputType="textPassword"
+
+        android:padding="12dp"
+
+        android:background="@android:drawable/edit_text"
+
+        android:layout_marginTop="16dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerRole"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:minHeight="48dp"
         android:layout_marginTop="16dp"/>
 
     <Button
-        android:id="@+id/buttonLogin"
+
+        android:id="@+id/buttonRegister"
+
         android:layout_width="match_parent"
+
         android:layout_height="wrap_content"
-        android:text="Login"
+
+        android:text="Register"
+
         android:layout_marginTop="24dp"
+
         android:backgroundTint="#0D47A1"
+
         android:textColor="#FFFFFF"/>
+
     <Button
-        android:id="@+id/buttonGoToRegister"
+
+        android:id="@+id/buttonGoToLogin"
+
         android:layout_width="match_parent"
+
         android:layout_height="wrap_content"
-        android:text="New user? Register here"
+
+        android:text="Already have an account? Login"
+
         android:layout_marginTop="8dp"
+
         android:backgroundTint="#1565C0"
+
         android:textColor="#FFFFFF"/>
+
 </LinearLayout>
