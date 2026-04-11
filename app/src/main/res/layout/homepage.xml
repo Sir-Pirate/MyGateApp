@@ -1,0 +1,59 @@
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="2"
+    android:rowCount="3"
+    android:padding="16dp"
+    android:background="#F5F5F5">
+
+    <!-- Visitor Authentication -->
+    <Button
+        android:id="@+id/btnVisitorAuth"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:text="Visitor Auth"/>
+
+    <!-- Delivery Management -->
+    <Button
+        android:id="@+id/btnDelivery"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:text="Deliveries"/>
+
+    <!-- Staff Entry -->
+    <Button
+        android:id="@+id/btnStaff"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:text="Staff Entry"/>
+
+    <!-- Emergency Alerts -->
+    <Button
+        android:id="@+id/btnAlerts"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:text="Alerts"/>
+
+    <!-- Resident Directory -->
+    <Button
+        android:id="@+id/btnResidents"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:text="Residents"/>
+
+    <!-- Logout -->
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:text="@string/logout"
+        android:background="#FF5252"
+        android:textColor="#FFFFFF"/>
+</GridLayout>
