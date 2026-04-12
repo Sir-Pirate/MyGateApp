@@ -1,47 +1,81 @@
 package com.example.myapplication
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.myapplication.ui.theme.MyApplicationTheme
+import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.AuthManager.loginUser
 
-class MainActivity : ComponentActivity() {
+class mainactivity : AppCompatActivity() {
+    private var editTextUsername: EditText? = null
+    private var editTextPassword: EditText? = null
+    private var buttonLogin: Button? = null
+    private var buttonGoToRegister: Button? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            MyApplicationTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    GreetingText(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+        setContentView(R.layout.loginpage)
+
+        editTextUsername = findViewById<EditText>(R.id.editTextUsername)
+        editTextPassword = findViewById<EditText>(R.id.editTextPassword)
+        buttonLogin = findViewById<Button>(R.id.buttonLogin)
+        buttonGoToRegister = findViewById<Button>(R.id.buttonGoToRegister)
+
+        // Login button
+        buttonLogin!!.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                val email = editTextUsername!!.getText().toString().trim { it <= ' ' }
+                val password = editTextPassword!!.getText().toString().trim { it <= ' ' }
+
+                if (email.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(
+                        getApplicationContext(),
+                        "Please enter both fields",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return
                 }
+
+                loginUser(
+                    email,
+                    password,
+                    {
+                        runOnUiThread(Runnable {
+                            Toast.makeText(
+                                getApplicationContext(),
+                                "Login Successful!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            // ← Navigate to Home Screen after login
+                            val intent = Intent(this@mainactivity, HomeActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        })
+                        null
+                    },
+                    { errorMessage: String? ->
+                        runOnUiThread(Runnable {
+                            Toast.makeText(
+                                getApplicationContext(),
+                                errorMessage,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        })
+                        null
+                    }
+                )
             }
-        }
-    }
-}
+        })
 
-@Composable
-fun GreetingText(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MyApplicationTheme {
-        GreetingText("Android")
+        // Go to Register button
+        buttonGoToRegister!!.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                val intent = Intent(this@mainactivity, RegisterActivity::class.java)
+                startActivity(intent)
+            }
+        })
     }
 }
