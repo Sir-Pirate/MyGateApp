@@ -7,6 +7,7 @@ object AuthManager {
         email: String,
         password: String,
         name: String,
+        phone: String,
         role: String,
         onSuccess: () -> Unit,
         onError: (String) -> Unit
@@ -19,6 +20,7 @@ object AuthManager {
                     "name" to name,
                     "email" to email,
                     "role" to role,
+                    "phone" to phone,
                     "userId" to userId
                 )
                 FirebaseHelper.getDatabase()

@@ -66,6 +66,7 @@ class RegisterActivity : AppCompatActivity() {
                     email,
                     password,
                     name,
+                    phone,
                     role,
                     {
                         runOnUiThread(Runnable {
@@ -74,8 +75,8 @@ class RegisterActivity : AppCompatActivity() {
                                 "Registration Successful!",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            // ← Navigate to Home Screen after registration
-                            val intent = Intent(this@RegisterActivity, HomeActivity::class.java)
+                            // ← Navigate to login screen after registration
+                            val intent = Intent(this@RegisterActivity, mainactivity::class.java)
                             startActivity(intent)
                             finish()
                         })
