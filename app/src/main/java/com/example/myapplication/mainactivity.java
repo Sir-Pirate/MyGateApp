@@ -45,7 +45,7 @@ public class mainactivity extends AppCompatActivity {
                         () -> {
                             Toast.makeText(mainactivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
                             // Navigate to home screen
-                            Intent intent = new Intent(mainactivity.this, HomeActivity.class);
+                            Intent intent = new Intent(mainactivity.this, homeactivity.class);
                             startActivity(intent);
                             finish();
                             return null;

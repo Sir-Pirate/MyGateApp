@@ -11,6 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
+
+        <!-- Login Screen (Launcher) -->
         <activity
             android:name=".mainactivity"
             android:exported="true"
@@ -18,11 +20,29 @@
             android:theme="@style/Theme.MyApplication">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterActivity" />
+
+        <!-- Register Screen -->
+        <activity android:name=".RegisterActivity" android:exported="false" />
+
+        <!-- Home Screen -->
+        <activity android:name=".homeactivity" android:exported="false"
+            tools:ignore="MissingClass" />
+
+        <!-- Visitor Approve Screen -->
+        <activity
+            android:name=".VisitorApproveActivity"
+            android:label="Pre-Approve Visitor"
+            android:exported="false" />
+
+        <!-- Visitor Arrival Screen -->
+        <activity
+            android:name=".VisitorArrivalActivity"
+            android:label="Visitor Arrival"
+            android:exported="false" />
+
     </application>
 
 </manifest>

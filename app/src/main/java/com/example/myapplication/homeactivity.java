@@ -1,3 +1,5 @@
+package com.example.myapplication;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -5,9 +7,6 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.R;
-import com.example.myapplication.VisitorApproveActivity;
-import com.example.myapplication.VisitorArrivalActivity;
 import com.google.android.material.button.MaterialButton;
 
 import AlertsActivity.AlertsActivity;

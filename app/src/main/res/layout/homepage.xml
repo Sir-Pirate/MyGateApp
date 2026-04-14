@@ -1,7 +1,7 @@
-<GridLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:columnCount="2"
     android:rowCount="3"
     android:padding="16dp"
@@ -56,4 +56,27 @@
         android:text="@string/logout"
         android:background="#FF5252"
         android:textColor="#FFFFFF"/>
+    <!-- Resident: Pre-Approve a Visitor -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnGoToVisitorApprove"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_margin="16dp"
+        android:text="Pre-Approve a Visitor"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="#1A237E"
+        app:cornerRadius="10dp" />
+
+    <!-- Guard: Mark Visitor Arrival -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnGoToVisitorArrival"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Visitor Arrival Check-In"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="#1B5E20"
+        app:cornerRadius="10dp" />
 </GridLayout>
