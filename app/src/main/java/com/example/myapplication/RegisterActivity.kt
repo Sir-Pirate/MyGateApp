@@ -1,167 +1,107 @@
-package com.example.myapplication;
+package com.example.myapplication
 
-import android.content.Intent;
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Spinner
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.AuthManager.registerUser
 
-import android.os.Bundle;
+class RegisterActivity : AppCompatActivity() {
+    private var editTextName: EditText? = null
+    private var editTextEmail: EditText? = null
+    private var editTextPhone: EditText? = null
+    private var editTextPassword: EditText? = null
+    private var buttonRegister: Button? = null
+    private var buttonGoToLogin: Button? = null
+    private var spinnerRole: Spinner? = null
 
-import android.view.View;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_register)
 
-import android.widget.ArrayAdapter;
+        editTextName = findViewById<EditText>(R.id.editTextName)
+        editTextEmail = findViewById<EditText>(R.id.editTextEmail)
+        editTextPhone = findViewById<EditText>(R.id.editTextPhone)
+        editTextPassword = findViewById<EditText>(R.id.editTextPassword)
+        buttonRegister = findViewById<Button>(R.id.buttonRegister)
+        buttonGoToLogin = findViewById<Button>(R.id.buttonGoToLogin)
+        spinnerRole = findViewById<Spinner>(R.id.spinnerRole)
 
-import android.widget.Button;
-
-import android.widget.EditText;
-
-import android.widget.Spinner;
-
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-public class RegisterActivity extends AppCompatActivity {
-
-    private EditText editTextName, editTextEmail, editTextPhone, editTextPassword;
-
-    private Button buttonRegister, buttonGoToLogin;
-
-    private Spinner spinnerRole;
-
-    @Override
-
-    protected void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_register);
-
-        editTextName = findViewById(R.id.editTextName);
-
-        editTextEmail = findViewById(R.id.editTextEmail);
-
-        editTextPhone = findViewById(R.id.editTextPhone);
-
-        editTextPassword = findViewById(R.id.editTextPassword);
-
-        buttonRegister = findViewById(R.id.buttonRegister);
-
-        buttonGoToLogin = findViewById(R.id.buttonGoToLogin);
-
-        spinnerRole = findViewById(R.id.spinnerRole);
-
-        // Role dropdown options
-
-        String[] roles = {"resident", "guard", "admin"};
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-
-                this,
-
-                android.R.layout.simple_spinner_item,
-
-                roles
-
-        );
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spinnerRole.setAdapter(adapter);
+        // Role dropdown
+        val roles = arrayOf<String?>("resident", "guard", "admin")
+        val adapter = ArrayAdapter<String?>(
+            this,
+            android.R.layout.simple_spinner_item,
+            roles
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerRole!!.setAdapter(adapter)
 
         // Register button
-
-        buttonRegister.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-
-            public void onClick(View v) {
-
-                String name = editTextName.getText().toString().trim();
-
-                String email = editTextEmail.getText().toString().trim();
-
-                String phone = editTextPhone.getText().toString().trim();
-
-                String password = editTextPassword.getText().toString().trim();
-
-                String role = spinnerRole.getSelectedItem().toString();
+        buttonRegister!!.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                val name = editTextName!!.getText().toString().trim { it <= ' ' }
+                val email = editTextEmail!!.getText().toString().trim { it <= ' ' }
+                val phone = editTextPhone!!.getText().toString().trim { it <= ' ' }
+                val password = editTextPassword!!.getText().toString().trim { it <= ' ' }
+                val role = spinnerRole!!.getSelectedItem().toString()
 
                 if (name.isEmpty() || email.isEmpty() ||
-
-                        phone.isEmpty() || password.isEmpty()) {
-
-                    Toast.makeText(RegisterActivity.this,
-
-                            "Please fill all fields",
-
-                            Toast.LENGTH_SHORT).show();
-
-                    return;
-
+                    phone.isEmpty() || password.isEmpty()
+                ) {
+                    Toast.makeText(
+                        this@RegisterActivity,
+                        "Please fill all fields",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return
                 }
 
-                AuthManager.INSTANCE.registerUser(
-
-                        email,
-
-                        password,
-
-                        name,
-
-                        role,
-
-                        () -> {
-
-                            Toast.makeText(RegisterActivity.this,
-
-                                    "Registration Successful!",
-
-                                    Toast.LENGTH_SHORT).show();
-
-                            Intent intent = new Intent(RegisterActivity.this, mainactivity.class);
-
-                            startActivity(intent);
-
-                            finish();
-
-                            return null;
-
-                        },
-
-                        errorMessage -> {
-
-                            Toast.makeText(RegisterActivity.this,
-
-                                    errorMessage,
-
-                                    Toast.LENGTH_SHORT).show();
-
-                            return null;
-
-                        }
-
-                );
-
+                registerUser(
+                    email,
+                    password,
+                    name,
+                    role,
+                    {
+                        runOnUiThread(Runnable {
+                            Toast.makeText(
+                                this@RegisterActivity,
+                                "Registration Successful!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            // ← Navigate to Home Screen after registration
+                            val intent = Intent(this@RegisterActivity, HomeActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        })
+                        null
+                    },
+                    { errorMessage: String? ->
+                        runOnUiThread(Runnable {
+                            Toast.makeText(
+                                this@RegisterActivity,
+                                errorMessage,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        })
+                        null
+                    }
+                )
             }
-
-        });
+        })
 
         // Go to login button
-
-        buttonGoToLogin.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-
-            public void onClick(View v) {
-
-                Intent intent = new Intent(RegisterActivity.this, mainactivity.class);
-
-                startActivity(intent);
-
-                finish();
-
+        buttonGoToLogin!!.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                val intent = Intent(this@RegisterActivity, mainactivity::class.java)
+                startActivity(intent)
+                finish()
             }
-
-        });
-
+        })
     }
-
 }

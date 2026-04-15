@@ -28,16 +28,15 @@
         <activity android:name=".RegisterActivity" android:exported="false" />
 
         <!-- Home Screen -->
-        <activity android:name=".homeactivity" android:exported="false"
-            tools:ignore="MissingClass" />
+        <activity android:name=".homeactivity" android:exported="false" />
 
-        <!-- Visitor Approve Screen -->
+        <!-- Visitor Approve Screen (M3 - Week 2) -->
         <activity
             android:name=".VisitorApproveActivity"
             android:label="Pre-Approve Visitor"
             android:exported="false" />
 
-        <!-- Visitor Arrival Screen -->
+        <!-- Visitor Arrival Screen (M3 - Week 2) -->
         <activity
             android:name=".VisitorArrivalActivity"
             android:label="Visitor Arrival"

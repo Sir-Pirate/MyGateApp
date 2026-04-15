@@ -8,15 +8,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.VisitorApproveActivity;
 import com.example.myapplication.VisitorArrivalActivity;
+import com.example.myapplication.mainactivity;
 import com.google.android.material.button.MaterialButton;
 
-import AlertsActivity.AlertsActivity;
-import DeliveryActivity.DeliveryActivity;
-import ResidentsActivity.ResidentsActivity;
-import StaffActivity.StaffActivity;
-import VisitorActivity.VisitorActivity;
+// Commented out until team members merge their branches
+// import AlertsActivity.AlertsActivity;
+// import DeliveryActivity.DeliveryActivity;
+// import ResidentsActivity.ResidentsActivity;
+// import StaffActivity.StaffActivity;
+// import VisitorActivity.VisitorActivity;
 
 public class homeactivity extends AppCompatActivity {
+
     Button btnVisitorAuth, btnDelivery, btnStaff, btnAlerts, btnResidents, btnLogout;
     MaterialButton btnGoApprove, btnGoArrival;
 
@@ -35,14 +38,16 @@ public class homeactivity extends AppCompatActivity {
         btnGoApprove   = findViewById(R.id.btnGoToVisitorApprove);
         btnGoArrival   = findViewById(R.id.btnGoToVisitorArrival);
 
-        btnVisitorAuth.setOnClickListener(v -> startActivity(new Intent(this, VisitorActivity.class)));
-        btnDelivery.setOnClickListener(v -> startActivity(new Intent(this, DeliveryActivity.class)));
-        btnStaff.setOnClickListener(v -> startActivity(new Intent(this, StaffActivity.class)));
-        btnAlerts.setOnClickListener(v -> startActivity(new Intent(this, AlertsActivity.class)));
-        btnResidents.setOnClickListener(v -> startActivity(new Intent(this, ResidentsActivity.class)));
+        // ── Commented out until team merges their branches ────────────────────
+        // btnVisitorAuth.setOnClickListener(v -> startActivity(new Intent(this, VisitorActivity.class)));
+        // btnDelivery.setOnClickListener(v -> startActivity(new Intent(this, DeliveryActivity.class)));
+        // btnStaff.setOnClickListener(v -> startActivity(new Intent(this, StaffActivity.class)));
+        // btnAlerts.setOnClickListener(v -> startActivity(new Intent(this, AlertsActivity.class)));
+        // btnResidents.setOnClickListener(v -> startActivity(new Intent(this, ResidentsActivity.class)));
+        // ─────────────────────────────────────────────────────────────────────
 
         btnLogout.setOnClickListener(v -> {
-            startActivity(new Intent(this, LoginActivity.class));
+            startActivity(new Intent(this, mainactivity.class)); // fixed: was LoginActivity
             finish();
         });
 
