@@ -41,6 +41,9 @@
             android:name=".VisitorArrivalActivity"
             android:label="Visitor Arrival"
             android:exported="false" />
+        <activity android:name=".VisitorAuthActivity" android:exported="false" />
+        <activity android:name=".DeliveryLogActivity" android:exported="false" />
+        <activity android:name=".DeliveryActivity"    android:exported="false" />
 
     </application>
 
