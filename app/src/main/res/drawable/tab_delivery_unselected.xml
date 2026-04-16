@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Save as: res/drawable/tab_delivery_unselected.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#FBE9E7" />
+    <corners android:radius="20dp" />
+</shape>

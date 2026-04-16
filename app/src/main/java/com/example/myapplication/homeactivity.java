@@ -109,12 +109,12 @@ public class homeactivity extends AppCompatActivity {
 
         // ── Quick Access (commented out until team merges) ─────────────────────
         btnVisitorAuth.setOnClickListener(v ->
-            showComingSoon("Visitor Auth")
+                startActivity(new Intent(this, VisitorAuthActivity.class))
             // startActivity(new Intent(this, VisitorActivity.class))
         );
 
         btnDelivery.setOnClickListener(v ->
-            showComingSoon("Delivery Management")
+                startActivity(new Intent(this, DeliveryLogActivity.class))
             // startActivity(new Intent(this, DeliveryActivity.class))
         );
 
