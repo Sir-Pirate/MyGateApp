@@ -7,6 +7,17 @@
     android:background="#2196F3"
     android:padding="24dp">
 
+    <!-- App Logo/Image -->
+
+    <ImageView
+        android:id="@+id/imageViewLogo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="35dp"
+        android:contentDescription="App Logo"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher" />
+
     <EditText
         android:id="@+id/editTextUsername"
         android:layout_width="match_parent"
