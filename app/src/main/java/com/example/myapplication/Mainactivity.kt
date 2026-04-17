@@ -2,80 +2,78 @@ package com.example.myapplication
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.myapplication.AuthManager.loginUser
 
-class mainactivity : AppCompatActivity() {
-    private var editTextUsername: EditText? = null
-    private var editTextPassword: EditText? = null
-    private var buttonLogin: Button? = null
-    private var buttonGoToRegister: Button? = null
+
+
+
+
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var editTextUsername: EditText
+    private lateinit var editTextPassword: EditText
+    private lateinit var buttonLogin: Button
+    private lateinit var buttonGoToRegister: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.loginpage)
 
-        editTextUsername = findViewById<EditText>(R.id.editTextUsername)
-        editTextPassword = findViewById<EditText>(R.id.editTextPassword)
-        buttonLogin = findViewById<Button>(R.id.buttonLogin)
-        buttonGoToRegister = findViewById<Button>(R.id.buttonGoToRegister)
+        editTextUsername = findViewById(R.id.editTextUsername)
+        editTextPassword = findViewById(R.id.editTextPassword)
+        buttonLogin = findViewById(R.id.buttonLogin)
+        buttonGoToRegister = findViewById(R.id.buttonGoToRegister)
 
-        // Login button
-        buttonLogin!!.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                val email = editTextUsername!!.getText().toString().trim { it <= ' ' }
-                val password = editTextPassword!!.getText().toString().trim { it <= ' ' }
+        buttonLogin.setOnClickListener {
+            val email = editTextUsername.text.toString().trim()
+            val password = editTextPassword.text.toString().trim()
 
-                if (email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(
-                        getApplicationContext(),
-                        "Please enter both fields",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return
-                }
+            if (email.isEmpty() || password.isEmpty()) {
+                showToast("Please enter both fields")
+                return@setOnClickListener
+            }
 
-                loginUser(
-                    email,
-                    password,
-                    {
-                        runOnUiThread(Runnable {
-                            Toast.makeText(
-                                getApplicationContext(),
-                                "Login Successful!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            // ← Navigate to Home Screen after login
-                            val intent = Intent(this@mainactivity, HomeActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        })
-                        null
-                    },
-                    { errorMessage: String? ->
-                        runOnUiThread(Runnable {
-                            Toast.makeText(
-                                getApplicationContext(),
-                                errorMessage,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        })
-                        null
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                showToast("Enter valid email")
+                return@setOnClickListener
+            }
+
+            if (password.length < 6) {
+                showToast("Password must be at least 6 characters")
+                return@setOnClickListener
+            }
+
+            AuthManager.loginUser(
+                email,
+                password,
+                onSuccess = {
+                    showToast("Login Successful!")
+
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                },
+                onError = { error ->
+                    val message = when {
+                        error?.contains("password", true) == true -> "Incorrect password"
+                        error?.contains("no user", true) == true -> "User not found"
+                        else -> "Login failed"
                     }
-                )
-            }
-        })
+                    showToast(message)
+                }
+            )
+        }
 
-        // Go to Register button
-        buttonGoToRegister!!.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                val intent = Intent(this@mainactivity, RegisterActivity::class.java)
-                startActivity(intent)
-            }
-        })
+        buttonGoToRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

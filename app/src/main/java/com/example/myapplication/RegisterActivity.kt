@@ -76,7 +76,7 @@ class RegisterActivity : AppCompatActivity() {
                                 Toast.LENGTH_SHORT
                             ).show()
                             // ← Navigate to login screen after registration
-                            val intent = Intent(this@RegisterActivity, mainactivity::class.java)
+                            val intent = Intent(this@RegisterActivity, MainActivity::class.java)
                             startActivity(intent)
                             finish()
                         })
@@ -99,7 +99,7 @@ class RegisterActivity : AppCompatActivity() {
         // Go to login button
         buttonGoToLogin!!.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                val intent = Intent(this@RegisterActivity, mainactivity::class.java)
+                val intent = Intent(this@RegisterActivity, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             }

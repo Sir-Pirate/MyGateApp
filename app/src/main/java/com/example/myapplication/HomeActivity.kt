@@ -47,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
         // Logout button
         buttonLogout.setOnClickListener {
             AuthManager.logoutUser()
-            val intent = Intent(this, mainactivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         }
