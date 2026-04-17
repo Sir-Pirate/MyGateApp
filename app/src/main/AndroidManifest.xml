@@ -14,7 +14,7 @@
 
         <!-- Login Screen (Launcher) -->
         <activity
-            android:name=".mainactivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.MyApplication">
@@ -28,7 +28,7 @@
         <activity android:name=".RegisterActivity" android:exported="false" />
 
         <!-- Home Screen -->
-        <activity android:name=".homeactivity" android:exported="false" />
+        <activity android:name=".HomeActivity" android:exported="false" />
 
         <!-- Visitor Approve Screen (M3 - Week 2) -->
         <activity

@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.VisitorApproveActivity;
 import com.example.myapplication.VisitorArrivalActivity;
-import com.example.myapplication.mainactivity;
+import com.example.myapplication.MainActivity;
 import com.google.android.material.button.MaterialButton;
 
 // Commented out until team members merge their branches
@@ -47,7 +47,7 @@ public class homeactivity extends AppCompatActivity {
         // ─────────────────────────────────────────────────────────────────────
 
         btnLogout.setOnClickListener(v -> {
-            startActivity(new Intent(this, mainactivity.class)); // fixed: was LoginActivity
+            startActivity(new Intent(this, MainActivity.class)); // fixed: was LoginActivity
             finish();
         });
 

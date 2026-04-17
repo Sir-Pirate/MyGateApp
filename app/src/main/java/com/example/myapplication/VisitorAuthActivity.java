@@ -249,7 +249,7 @@ public class VisitorAuthActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, homeactivity.class));
+        startActivity(new Intent(this, HomeActivity.class));
         finish();
     }
 }
