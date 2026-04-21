@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
 
-        <!-- Login screen — opens first when app starts -->
+        <!-- Login Screen (Launcher) -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -26,8 +24,27 @@
             </intent-filter>
         </activity>
 
-        <!-- Register screen -->
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".HomeActivity" />
+        <!-- Register Screen -->
+        <activity android:name=".RegisterActivity" android:exported="false" />
+
+        <!-- Home Screen -->
+        <activity android:name=".HomeActivity" android:exported="false" />
+
+        <!-- Visitor Approve Screen (M3 - Week 2) -->
+        <activity
+            android:name=".VisitorApproveActivity"
+            android:label="Pre-Approve Visitor"
+            android:exported="false" />
+
+        <!-- Visitor Arrival Screen (M3 - Week 2) -->
+        <activity
+            android:name=".VisitorArrivalActivity"
+            android:label="Visitor Arrival"
+            android:exported="false" />
+        <activity android:name=".VisitorAuthActivity" android:exported="false" />
+        <activity android:name=".DeliveryLogActivity" android:exported="false" />
+        <activity android:name=".DeliveryActivity"    android:exported="false" />
+
     </application>
+
 </manifest>

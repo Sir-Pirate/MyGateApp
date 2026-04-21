@@ -1,55 +1,226 @@
 package com.example.myapplication
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class HomeActivity : AppCompatActivity() {
 
+    private var btnGoToVisitorApprove: LinearLayout? = null
+    private var btnGoToVisitorArrival: LinearLayout? = null
+
+    private var userRole: String? = null
+
+    private var btnVisitorAuth: LinearLayout? = null
+    private var btnDelivery: LinearLayout? = null
+    private var btnStaff: LinearLayout? = null
+    private var btnAlerts: LinearLayout? = null
+    private var btnResidents: LinearLayout? = null
+    private var btnNotices: LinearLayout? = null
+    private var btnMyProfile: LinearLayout? = null
+    private var btnParking: LinearLayout? = null
+    private var btnSOS: LinearLayout? = null
+
+    private var tvWelcome: TextView? = null
+    private var tvDateTime: TextView? = null
+
+    private var btnLogout: MaterialButton? = null
+
+    private val auth = FirebaseAuth.getInstance()
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+        setContentView(R.layout.homepage)
 
-        val textWelcome = findViewById<TextView>(R.id.textWelcome)
-        val textRole = findViewById<TextView>(R.id.textRole)
-        val buttonLogout = findViewById<Button>(R.id.buttonLogout)
+        userRole = intent.getStringExtra("role")
 
-        // Get current user
-        val currentUser = FirebaseHelper.getAuth().currentUser
+        bindViews()
+        setWelcomeHeader()
+        applyRoleBasedUI()
+        setClickListeners()
+    }
 
-        // Show email
-        textWelcome.text = "Welcome, ${currentUser?.email}"
+    private fun bindViews() {
+        tvWelcome = findViewById(R.id.tvWelcome)
+        tvDateTime = findViewById(R.id.tvDateTime)
 
-        // Fetch role from Firestore
-        val userId = currentUser?.uid
-        if (userId != null) {
-            FirebaseHelper.getDatabase()
-                .collection("users")
-                .document(userId)
-                .get()
-                .addOnSuccessListener { document ->
-                    if (document != null && document.exists()) {
-                        val role = document.getString("role") ?: "Unknown"
-                        runOnUiThread {
-                            textRole.text = "Role: $role"
-                        }
-                    }
-                }
-                .addOnFailureListener {
-                    runOnUiThread {
-                        textRole.text = "Role: Could not fetch"
-                    }
-                }
+        btnGoToVisitorApprove = findViewById(R.id.btnGoToVisitorApprove)
+        btnGoToVisitorArrival = findViewById(R.id.btnGoToVisitorArrival)
+
+        btnVisitorAuth = findViewById(R.id.btnVisitorAuth)
+        btnDelivery = findViewById(R.id.btnDelivery)
+        btnStaff = findViewById(R.id.btnStaff)
+        btnAlerts = findViewById(R.id.btnAlerts)
+        btnResidents = findViewById(R.id.btnResidents)
+        btnNotices = findViewById(R.id.btnNotices)
+        btnMyProfile = findViewById(R.id.btnMyProfile)
+        btnParking = findViewById(R.id.btnParking)
+        btnSOS = findViewById(R.id.btnSOS)
+
+        btnLogout = findViewById(R.id.btnLogout)
+    }
+
+    private fun setWelcomeHeader() {
+        val user = auth.currentUser
+        if (user?.email != null) {
+            val name = user.email!!.substringBefore("@")
+            tvWelcome?.text = "Welcome, $name!"
         }
 
-        // Logout button
-        buttonLogout.setOnClickListener {
-            AuthManager.logoutUser()
-            val intent = Intent(this, MainActivity::class.java)
+        val date = SimpleDateFormat("EEE, dd MMM", Locale.getDefault()).format(Date())
+        tvDateTime?.text = date
+    }
+
+    private fun applyRoleBasedUI() {
+
+        if (userRole == null) {
+            Toast.makeText(this, "Role missing", Toast.LENGTH_SHORT).show()
+            hideSensitiveFeatures()
+            return
+        }
+
+        when (userRole) {
+
+            "resident" -> {
+                btnGoToVisitorArrival?.visibility = View.GONE
+                btnVisitorAuth?.visibility = View.GONE
+
+                // 🔥 FULL DELIVERY BLOCK
+                btnDelivery?.visibility = View.GONE
+                btnDelivery?.isEnabled = false
+                btnDelivery?.setOnClickListener(null)
+            }
+
+            "guard" -> {
+                btnGoToVisitorApprove?.visibility = View.GONE
+
+                btnNotices?.visibility = View.GONE
+                btnMyProfile?.visibility = View.GONE
+                btnParking?.visibility = View.GONE
+                btnSOS?.visibility = View.GONE
+            }
+
+            "admin" -> {
+                // full access
+            }
+
+            else -> {
+                Toast.makeText(this, "Invalid role", Toast.LENGTH_SHORT).show()
+                hideSensitiveFeatures()
+            }
+        }
+    }
+
+    // SAFETY FALLBACK
+    private fun hideSensitiveFeatures() {
+        btnDelivery?.visibility = View.GONE
+        btnGoToVisitorApprove?.visibility = View.GONE
+        btnVisitorAuth?.visibility = View.GONE
+    }
+
+    private fun setClickListeners() {
+
+        btnGoToVisitorApprove?.setOnClickListener {
+            val intent = Intent(this, VisitorApproveActivity::class.java)
+            intent.putExtra("role", userRole)
             startActivity(intent)
-            finish()
         }
+
+        btnGoToVisitorArrival?.setOnClickListener {
+            startActivity(Intent(this, VisitorArrivalActivity::class.java))
+        }
+
+        btnVisitorAuth?.setOnClickListener {
+            startActivity(Intent(this, VisitorAuthActivity::class.java))
+        }
+
+        //FINAL DELIVERY SAFETY CHECK
+        btnDelivery?.setOnClickListener {
+
+            if (userRole == "resident") {
+                Toast.makeText(this, "Not allowed", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            startActivity(Intent(this, DeliveryLogActivity::class.java))
+        }
+
+        btnStaff?.setOnClickListener {
+            showComingSoon("Staff Entry")
+        }
+
+        btnAlerts?.setOnClickListener {
+            showComingSoon("Alerts")
+        }
+
+        btnResidents?.setOnClickListener {
+            showComingSoon("Residents Directory")
+        }
+
+        btnNotices?.setOnClickListener {
+            showComingSoon("Notices Board")
+        }
+
+        btnMyProfile?.setOnClickListener {
+            showComingSoon("My Profile")
+        }
+
+        btnParking?.setOnClickListener {
+            showComingSoon("Parking Management")
+        }
+
+        btnSOS?.setOnClickListener {
+            showSOSDialog()
+        }
+
+        btnLogout?.setOnClickListener {
+            showLogoutDialog()
+        }
+    }
+
+    private fun showComingSoon(feature: String) {
+        Toast.makeText(this, "$feature — Coming Soon!", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showLogoutDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Logout")
+            .setMessage("Are you sure you want to logout?")
+            .setPositiveButton("Yes, Logout") { _, _ ->
+
+                auth.signOut()
+
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+
+                finish()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showSOSDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("🆘 Emergency SOS")
+            .setMessage("Send alert to security?")
+            .setPositiveButton("Send") { _, _ ->
+                Toast.makeText(this, "SOS Sent!", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 }
