@@ -2,7 +2,6 @@ package com.example.myapplication
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -159,7 +158,9 @@ class HomeActivity : AppCompatActivity() {
         }
 
         btnStaff?.setOnClickListener {
-            showComingSoon("Staff Entry")
+
+            // Replace showComingSoon("Staff Entry") with:
+            startActivity(Intent(this, StaffCheckInActivity::class.java))
         }
 
         btnAlerts?.setOnClickListener {
