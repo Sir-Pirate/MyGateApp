@@ -44,6 +44,8 @@
         <activity android:name=".VisitorAuthActivity" android:exported="false" />
         <activity android:name=".DeliveryLogActivity" android:exported="false" />
         <activity android:name=".DeliveryActivity"    android:exported="false" />
+        <activity android:name=".StaffCheckInActivity" android:exported="false" />
+        <activity android:name=".StaffActivity"        android:exported="false" />
 
     </application>
 

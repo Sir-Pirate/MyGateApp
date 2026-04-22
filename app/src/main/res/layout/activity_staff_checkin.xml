@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F0F2F5"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#4A148C"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="40dp"
+            android:paddingBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👷  Staff Check-In"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Enter your phone number to check in or out"
+                android:textColor="#CE93D8"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- Step 1: Phone Lookup Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp"
+            app:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Step 1 — Enter Your Phone"
+                    android:textColor="#4A148C"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="14dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxCornerRadiusTopStart="10dp"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusBottomStart="10dp"
+                    app:boxCornerRadiusBottomEnd="10dp"
+                    app:boxStrokeColor="#4A148C"
+                    app:hintTextColor="#4A148C"
+                    app:startIconDrawable="@android:drawable/ic_menu_call"
+                    app:startIconTint="#4A148C">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="10-digit mobile number"
+                        android:inputType="phone"
+                        android:maxLength="10"
+                        android:textColor="#212121"
+                        android:textSize="16sp"
+                        android:letterSpacing="0.05" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLookup"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Look Me Up"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#4A148C"
+                    app:cornerRadius="10dp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Loading -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <!-- Step 2a: Returning Staff — Check In / Check Out -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardReturningStaff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp"
+            app:cardBackgroundColor="#FFFFFF"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Welcome Back!"
+                    android:textColor="#4A148C"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Staff Info Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="6dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Name:" android:textColor="#78909C" android:textSize="13sp" />
+                    <TextView android:id="@+id/tvStaffName" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="2"
+                        android:text="—" android:textColor="#212121" android:textSize="13sp" android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="6dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Role:" android:textColor="#78909C" android:textSize="13sp" />
+                    <TextView android:id="@+id/tvStaffType" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="2"
+                        android:text="—" android:textColor="#212121" android:textSize="13sp" android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:text="Status:" android:textColor="#78909C" android:textSize="13sp" />
+                    <TextView android:id="@+id/tvCurrentStatus" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="2"
+                        android:text="—" android:textSize="13sp" android:textStyle="bold" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="#F0F0F0" android:layout_marginBottom="16dp" />
+
+                <!-- Check In Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCheckIn"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="✓  Check In"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#2E7D32"
+                    app:cornerRadius="10dp"
+                    android:visibility="gone" />
+
+                <!-- Check Out Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCheckOut"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="✕  Check Out"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#C62828"
+                    app:cornerRadius="10dp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Step 2b: New Staff Registration Form -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardNewStaff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp"
+            app:cardBackgroundColor="#FFFFFF"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="First Time? Register Below"
+                    android:textColor="#4A148C"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Name -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Full Name *" android:textColor="#37474F"
+                    android:textSize="13sp" android:textStyle="bold" android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxCornerRadiusTopStart="10dp" app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusBottomStart="10dp" app:boxCornerRadiusBottomEnd="10dp"
+                    app:boxStrokeColor="#4A148C" app:hintTextColor="#4A148C">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etName"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:hint="Enter your full name"
+                        android:inputType="textPersonName"
+                        android:textColor="#212121" android:textSize="15sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Staff Type Spinner -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Staff Type *" android:textColor="#37474F"
+                    android:textSize="13sp" android:textStyle="bold" android:layout_marginBottom="6dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerStaffType"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginBottom="14dp"
+                    android:background="@drawable/spinner_bg"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textSize="15sp" />
+
+                <!-- Flat Number (optional) -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Flat You Work In (Optional)" android:textColor="#37474F"
+                    android:textSize="13sp" android:textStyle="bold" android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilFlat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxCornerRadiusTopStart="10dp" app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusBottomStart="10dp" app:boxCornerRadiusBottomEnd="10dp"
+                    app:boxStrokeColor="#4A148C" app:hintTextColor="#4A148C">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etFlat"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:hint="e.g. 4B, 12A (leave blank if multiple)"
+                        android:inputType="text"
+                        android:textColor="#212121" android:textSize="15sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRegisterCheckIn"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Register &amp; Check In"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#4A148C"
+                    app:cornerRadius="12dp" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Status Message -->
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center"
+            android:padding="12dp"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <!-- View All Staff Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnViewStaff"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
+            android:text="View All Staff Inside"
+            android:textColor="#4A148C"
+            android:textSize="14sp"
+            app:backgroundTint="#EDE7F6"
+            app:cornerRadius="12dp" />
+
+        <!-- Back to Home -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBackToHome"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp"
+            android:text="Back to Home"
+            android:textColor="#78909C"
+            app:backgroundTint="#ECEFF1"
+            app:cornerRadius="12dp" />
+
+    </LinearLayout>
+</ScrollView>
