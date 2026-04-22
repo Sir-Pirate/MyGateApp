@@ -8,6 +8,7 @@ object AuthManager {
         password: String,
         name: String,
         role: String,
+        phone: String,
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
@@ -19,7 +20,8 @@ object AuthManager {
                     "name" to name,
                     "email" to email,
                     "role" to role,
-                    "userId" to userId
+                    "userId" to userId,
+                    "phone" to phone
                 )
                 FirebaseHelper.getDatabase()
                     .collection("users")

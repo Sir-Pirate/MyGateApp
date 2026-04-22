@@ -67,6 +67,7 @@ class RegisterActivity : AppCompatActivity() {
                     password,
                     name,
                     role,
+                    phone,
                     {
                         runOnUiThread(Runnable {
                             Toast.makeText(
