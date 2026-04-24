@@ -9,6 +9,8 @@ object AuthManager {
         name: String,
         phone: String,
         role: String,
+        flatNo: String,
+        tower: String,
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
@@ -39,7 +41,9 @@ object AuthManager {
                             "email" to email,
                             "phone" to phone,
                             "role" to role,
-                            "userId" to userId
+                            "userId" to userId,
+                            "flatNo" to flatNo,
+                            "tower" to tower
                         )
 
                         // ✅ Step 3: Save in Firestore
@@ -56,7 +60,7 @@ object AuthManager {
                     }
             }
             .addOnFailureListener {
-                onError("Error checking phone number")
+                onError(it.message ?: "Error checking phone number")
             }
     }
 

@@ -15,6 +15,8 @@ import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 
 class HomeActivity : AppCompatActivity() {
 
@@ -96,12 +98,27 @@ class HomeActivity : AppCompatActivity() {
 
             "resident" -> {
                 btnGoToVisitorArrival?.visibility = View.GONE
-                btnVisitorAuth?.visibility = View.GONE
+                btnVisitorAuth?.visibility = View.VISIBLE
 
-                // 🔥 FULL DELIVERY BLOCK
                 btnDelivery?.visibility = View.GONE
                 btnDelivery?.isEnabled = false
                 btnDelivery?.setOnClickListener(null)
+
+                // Save this device's FCM token for resident notifications
+                val uid = auth.currentUser?.uid
+
+                if (uid != null) {
+
+                    FirebaseMessaging.getInstance()
+                        .token
+                        .addOnSuccessListener { token ->
+
+                            FirebaseFirestore.getInstance()
+                                .collection("users")
+                                .document(uid)
+                                .update("fcmToken", token)
+                        }
+                }
             }
 
             "guard" -> {
@@ -144,7 +161,18 @@ class HomeActivity : AppCompatActivity() {
         }
 
         btnVisitorAuth?.setOnClickListener {
-            startActivity(Intent(this, VisitorAuthActivity::class.java))
+
+            val intent = Intent(
+                this,
+                VisitorAuthActivity::class.java
+            )
+
+            intent.putExtra(
+                "role",
+                userRole
+            )
+
+            startActivity(intent)
         }
 
         //FINAL DELIVERY SAFETY CHECK
@@ -163,7 +191,13 @@ class HomeActivity : AppCompatActivity() {
         }
 
         btnAlerts?.setOnClickListener {
-            showComingSoon("Alerts")
+
+            startActivity(
+                Intent(
+                    this,
+                    AlertsActivity::class.java
+                )
+            )
         }
 
         btnResidents?.setOnClickListener {
@@ -203,7 +237,7 @@ class HomeActivity : AppCompatActivity() {
 
                 auth.signOut()
 
-                val intent = Intent(this, LoginActivity::class.java)
+                val intent = Intent(this,MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
 

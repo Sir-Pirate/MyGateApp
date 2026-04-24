@@ -6,41 +6,41 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-/**
- * VisitorManager.java
- *
- * Central Firebase backend for ALL visitor operations.
- * Used by: VisitorApproveActivity, VisitorArrivalActivity, VisitorAuthActivity
- *
- * Firestore structure:
- *   visitors/
- *     {docId}/
- *       name, phone, note, status, residentId,
- *       residentName, approvedAt, arrivedAt
- */
 public class VisitorManager {
 
-    private static final FirebaseFirestore db   = FirebaseFirestore.getInstance();
-    private static final FirebaseAuth      auth = FirebaseAuth.getInstance();
+    private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private static final FirebaseAuth auth = FirebaseAuth.getInstance();
+
     private static final String COLLECTION = "visitors";
 
-    // ── Callback Interfaces ────────────────────────────────────────────────────
+    // ── Callbacks ─────────────────────────────────────────────
 
-    public interface OnSuccessCallback       { void onSuccess(); }
-    public interface OnFailureCallback       { void onFailure(String errorMsg); }
-    public interface OnVisitorFound          { void onFound(VisitorModel visitor); }
-    public interface OnVisitorListLoaded     { void onLoaded(List<VisitorModel> visitors); }
+    public interface OnSuccessCallback {
+        void onSuccess();
+    }
 
-    // ── 1. Approve a Visitor (Resident) ───────────────────────────────────────
-    /**
-     * Creates a new visitor document in Firestore with status = "approved".
-     * Called from VisitorApproveActivity.
-     */
+    public interface OnFailureCallback {
+        void onFailure(String errorMsg);
+    }
+
+    public interface OnVisitorFound {
+        void onFound(VisitorModel visitor);
+    }
+
+    public interface OnVisitorListLoaded {
+        void onLoaded(List<VisitorModel> visitors);
+    }
+
+    // ── 1. Approve Visitor ───────────────────────────────────
+
     public static void approveVisitor(
             String visitorName,
             String visitorPhone,
@@ -49,149 +49,410 @@ public class VisitorManager {
             OnFailureCallback onFailure) {
 
         FirebaseUser user = auth.getCurrentUser();
-        if (user == null) { onFailure.onFailure("Not logged in"); return; }
+
+        if (user == null) {
+            onFailure.onFailure("Not logged in");
+            return;
+        }
 
         String residentId = user.getUid();
-        String residentName = user.getEmail() != null
-                ? user.getEmail().split("@")[0] : "Resident";
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("name",         visitorName);
-        data.put("phone",        visitorPhone);
-        data.put("note",         note);
-        data.put("status",       "approved");
-        data.put("residentId",   residentId);
-        data.put("residentName", residentName);
-        data.put("approvedAt",   System.currentTimeMillis());
-        data.put("arrivedAt",    0L);
+        String residentName =
+                user.getEmail() != null
+                        ? user.getEmail().split("@")[0]
+                        : "Resident";
 
-        db.collection(COLLECTION)
-            .add(data)
-            .addOnSuccessListener(docRef -> onSuccess.onSuccess())
-            .addOnFailureListener(e -> onFailure.onFailure(e.getMessage()));
+        db.collection("users")
+                .document(residentId)
+                .get()
+                .addOnSuccessListener(userDoc -> {
+
+                    String flatNo = userDoc.getString("flatNo");
+                    String tower = userDoc.getString("tower");
+
+                    Map<String,Object> data = new HashMap<>();
+
+                    data.put("name", visitorName);
+                    data.put("phone", visitorPhone);
+                    data.put("note", note);
+
+                    data.put("status", "approved");
+
+                    data.put("residentId", residentId);
+                    data.put("residentName", residentName);
+
+                    data.put("flatNo", flatNo);
+                    data.put("tower", tower);
+
+                    data.put("approvedAt", System.currentTimeMillis());
+                    data.put("arrivedAt", 0L);
+
+                    db.collection(COLLECTION)
+                            .add(data)
+                            .addOnSuccessListener(
+                                    docRef -> onSuccess.onSuccess()
+                            )
+                            .addOnFailureListener(
+                                    e -> onFailure.onFailure(
+                                            e.getMessage()
+                                    )
+                            );
+                })
+                .addOnFailureListener(
+                        e -> onFailure.onFailure(
+                                e.getMessage()
+                        )
+                );
     }
 
-    // ── 2. Get Visitor by Phone (Guard) ────────────────────────────────────────
-    /**
-     * Looks up a visitor by phone number.
-     * Returns the first approved visitor with that phone.
-     * Called from VisitorArrivalActivity.
-     */
+    // ── 2. Lookup Visitor by Phone ───────────────────────────
+
     public static void getVisitorByPhone(
             String phone,
             OnVisitorFound onFound,
             OnFailureCallback onFailure) {
 
         db.collection(COLLECTION)
-            .whereEqualTo("phone", phone)
-            .whereEqualTo("status", "approved")
-            .limit(1)
-            .get()
-            .addOnSuccessListener(querySnapshot -> {
-                if (querySnapshot.isEmpty()) {
-                    onFailure.onFailure("No approved visitor found with this phone number");
-                    return;
-                }
-                QueryDocumentSnapshot doc =
-                        (QueryDocumentSnapshot) querySnapshot.getDocuments().get(0);
-                VisitorModel visitor = doc.toObject(VisitorModel.class);
-                visitor.setId(doc.getId());
-                onFound.onFound(visitor);
-            })
-            .addOnFailureListener(e -> onFailure.onFailure(e.getMessage()));
+                .whereEqualTo("phone", phone)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+
+                    if (querySnapshot.isEmpty()) {
+
+                        onFailure.onFailure(
+                                "No approved visitor found"
+                        );
+                        return;
+                    }
+
+                    QueryDocumentSnapshot doc =
+                            (QueryDocumentSnapshot)
+                                    querySnapshot
+                                            .getDocuments()
+                                            .get(0);
+
+                    VisitorModel visitor =
+                            doc.toObject(
+                                    VisitorModel.class
+                            );
+
+                    visitor.setId(doc.getId());
+
+                    onFound.onFound(visitor);
+
+                })
+                .addOnFailureListener(
+                        e -> onFailure.onFailure(
+                                e.getMessage()
+                        )
+                );
     }
 
-    // ── 3. Mark Visitor as Arrived (Guard) ────────────────────────────────────
-    /**
-     * Updates visitor status to "arrived" and records the arrival timestamp.
-     * Called from VisitorArrivalActivity.
-     */
+    // ── 3. Mark Visitor Arrived + Create Alert ───────────────
+
     public static void markVisitorArrived(
             String visitorId,
             OnSuccessCallback onSuccess,
             OnFailureCallback onFailure) {
 
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("status",    "arrived");
-        updates.put("arrivedAt", System.currentTimeMillis());
-
+        // First read visitor
         db.collection(COLLECTION)
-            .document(visitorId)
-            .update(updates)
-            .addOnSuccessListener(aVoid -> onSuccess.onSuccess())
-            .addOnFailureListener(e -> onFailure.onFailure(e.getMessage()));
+                .document(visitorId)
+                .get()
+                .addOnSuccessListener(visitorDoc -> {
+
+                    if (!visitorDoc.exists()) {
+                        onFailure.onFailure(
+                                "Visitor not found"
+                        );
+                        return;
+                    }
+
+                    String currentStatus =
+                            visitorDoc.getString(
+                                    "status"
+                            );
+
+                    // Prevent duplicate arrival alerts
+                    if ("arrived".equals(currentStatus)) {
+                        onSuccess.onSuccess();
+                        return;
+                    }
+
+                    long arrivalTime =
+                            System.currentTimeMillis();
+
+                    Map<String,Object> updates =
+                            new HashMap<>();
+
+                    updates.put(
+                            "status",
+                            "arrived"
+                    );
+
+                    updates.put(
+                            "arrivedAt",
+                            arrivalTime
+                    );
+
+                    db.collection(COLLECTION)
+                            .document(visitorId)
+                            .update(updates)
+                            .addOnSuccessListener(aVoid -> {
+
+                                String residentId =
+                                        visitorDoc.getString(
+                                                "residentId"
+                                        );
+
+                                String visitorName =
+                                        visitorDoc.getString(
+                                                "name"
+                                        );
+
+                                String phone =
+                                        visitorDoc.getString(
+                                                "phone"
+                                        );
+
+                                String flatNo =
+                                        visitorDoc.getString(
+                                                "flatNo"
+                                        );
+
+                                String tower =
+                                        visitorDoc.getString(
+                                                "tower"
+                                        );
+
+                                String timeText =
+                                        new SimpleDateFormat(
+                                                "hh:mm a",
+                                                Locale.getDefault()
+                                        ).format(
+                                                new Date(
+                                                        arrivalTime
+                                                )
+                                        );
+
+                                String alertMessage =
+                                        visitorName +
+                                                " (" + phone + ")" +
+                                                " arrived at " +
+                                                timeText +
+                                                " to Flat " +
+                                                flatNo +
+                                                ", Tower " +
+                                                tower;
+
+                                Map<String,Object> alert =
+                                        new HashMap<>();
+
+                                alert.put(
+                                        "residentId",
+                                        residentId
+                                );
+
+                                alert.put(
+                                        "visitorId",
+                                        visitorId
+                                );
+
+                                alert.put(
+                                        "visitorName",
+                                        visitorName
+                                );
+
+                                alert.put(
+                                        "phone",
+                                        phone
+                                );
+
+                                alert.put(
+                                        "flatNo",
+                                        flatNo
+                                );
+
+                                alert.put(
+                                        "tower",
+                                        tower
+                                );
+
+                                alert.put(
+                                        "message",
+                                        alertMessage
+                                );
+
+                                alert.put(
+                                        "createdAt",
+                                        arrivalTime
+                                );
+
+                                alert.put(
+                                        "isRead",
+                                        false
+                                );
+
+                                db.collection("alerts")
+                                        .add(alert);
+
+                                onSuccess.onSuccess();
+
+                            })
+                            .addOnFailureListener(
+                                    e -> onFailure.onFailure(
+                                            e.getMessage()
+                                    )
+                            );
+
+                })
+                .addOnFailureListener(
+                        e -> onFailure.onFailure(
+                                e.getMessage()
+                        )
+                );
     }
 
-    // ── 4. Get All Visitors (for VisitorAuthActivity list) ────────────────────
-    /**
-     * Fetches all visitors ordered by approvedAt descending.
-     * Optional status filter: pass null to get all, or "approved"/"arrived".
-     */
+    // ── 4. All Visitors ──────────────────────────────────────
+
     public static void getAllVisitors(
             String statusFilter,
             OnVisitorListLoaded onLoaded,
             OnFailureCallback onFailure) {
 
-        Query query = db.collection(COLLECTION)
-                .orderBy("approvedAt", Query.Direction.DESCENDING);
+        Query query =
+                db.collection(COLLECTION)
+                        .orderBy(
+                                "approvedAt",
+                                Query.Direction.DESCENDING
+                        );
 
         if (statusFilter != null) {
-            query = query.whereEqualTo("status", statusFilter);
+            query =
+                    query.whereEqualTo(
+                            "status",
+                            statusFilter
+                    );
         }
 
         query.get()
-            .addOnSuccessListener(querySnapshot -> {
-                List<VisitorModel> list = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : querySnapshot) {
-                    VisitorModel visitor = doc.toObject(VisitorModel.class);
-                    visitor.setId(doc.getId());
-                    list.add(visitor);
-                }
-                onLoaded.onLoaded(list);
-            })
-            .addOnFailureListener(e -> onFailure.onFailure(e.getMessage()));
+                .addOnSuccessListener(querySnapshot -> {
+
+                    List<VisitorModel> list =
+                            new ArrayList<>();
+
+                    for (QueryDocumentSnapshot doc
+                            : querySnapshot) {
+
+                        VisitorModel visitor =
+                                doc.toObject(
+                                        VisitorModel.class
+                                );
+
+                        visitor.setId(
+                                doc.getId()
+                        );
+
+                        list.add(visitor);
+                    }
+
+                    onLoaded.onLoaded(list);
+
+                })
+                .addOnFailureListener(
+                        e -> onFailure.onFailure(
+                                e.getMessage()
+                        )
+                );
     }
 
-    // ── 5. Get Visitors for Current Resident Only ─────────────────────────────
-    /**
-     * Fetches only the visitors approved by the currently logged-in resident.
-     */
+    // ── 5. Current Resident Visitors ─────────────────────────
+
     public static void getMyVisitors(
             OnVisitorListLoaded onLoaded,
             OnFailureCallback onFailure) {
 
-        FirebaseUser user = auth.getCurrentUser();
-        if (user == null) { onFailure.onFailure("Not logged in"); return; }
+        FirebaseUser user =
+                auth.getCurrentUser();
+
+        if (user == null) {
+            onFailure.onFailure(
+                    "Not logged in"
+            );
+            return;
+        }
 
         db.collection(COLLECTION)
-            .whereEqualTo("residentId", user.getUid())
-            .orderBy("approvedAt", Query.Direction.DESCENDING)
-            .get()
-            .addOnSuccessListener(querySnapshot -> {
-                List<VisitorModel> list = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : querySnapshot) {
-                    VisitorModel visitor = doc.toObject(VisitorModel.class);
-                    visitor.setId(doc.getId());
-                    list.add(visitor);
-                }
-                onLoaded.onLoaded(list);
-            })
-            .addOnFailureListener(e -> onFailure.onFailure(e.getMessage()));
+                .whereEqualTo(
+                        "residentId",
+                        user.getUid()
+                )
+                .orderBy(
+                        "approvedAt",
+                        Query.Direction.DESCENDING
+                )
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+
+                    List<VisitorModel> list =
+                            new ArrayList<>();
+
+                    for (QueryDocumentSnapshot doc
+                            : querySnapshot) {
+
+                        VisitorModel visitor =
+                                doc.toObject(
+                                        VisitorModel.class
+                                );
+
+                        visitor.setId(
+                                doc.getId()
+                        );
+
+                        list.add(visitor);
+                    }
+
+                    onLoaded.onLoaded(list);
+
+                })
+                .addOnFailureListener(
+                        e -> onFailure.onFailure(
+                                e.getMessage()
+                        )
+                );
     }
 
-    // ── 6. Delete / Revoke a Visitor ──────────────────────────────────────────
-    /**
-     * Deletes a visitor approval. Called when resident wants to cancel.
-     */
+    // ── 6. Revoke Visitor ────────────────────────────────────
+
     public static void revokeVisitor(
             String visitorId,
             OnSuccessCallback onSuccess,
             OnFailureCallback onFailure) {
 
+        Map<String,Object> updates =
+                new HashMap<>();
+
+        updates.put(
+                "status",
+                "revoked"
+        );
+
+        updates.put(
+                "revokedAt",
+                System.currentTimeMillis()
+        );
+
         db.collection(COLLECTION)
-            .document(visitorId)
-            .delete()
-            .addOnSuccessListener(aVoid -> onSuccess.onSuccess())
-            .addOnFailureListener(e -> onFailure.onFailure(e.getMessage()));
+                .document(visitorId)
+                .update(updates)
+                .addOnSuccessListener(
+                        aVoid -> onSuccess.onSuccess()
+                )
+                .addOnFailureListener(
+                        e -> onFailure.onFailure(
+                                e.getMessage()
+                        )
+                );
     }
 }

@@ -44,6 +44,21 @@
         <activity android:name=".VisitorAuthActivity" android:exported="false" />
         <activity android:name=".DeliveryLogActivity" android:exported="false" />
         <activity android:name=".DeliveryActivity"    android:exported="false" />
+        <activity android:name=".AlertsActivity"/>
+        <!-- messaging service firebase -->
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+
+            <intent-filter>
+                <action android:name=
+                    "com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+
+
+        <!-- for visitor arrival alerts for residetn -->
+
+        </service>
 
     </application>
 

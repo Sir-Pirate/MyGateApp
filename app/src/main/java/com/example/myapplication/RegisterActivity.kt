@@ -17,6 +17,8 @@ class RegisterActivity : AppCompatActivity() {
     private var editTextEmail: EditText? = null
     private var editTextPhone: EditText? = null
     private var editTextPassword: EditText? = null
+    private var editTextFlatNo: EditText? = null
+    private var editTextTower: EditText? = null
     private var buttonRegister: Button? = null
     private var buttonGoToLogin: Button? = null
     private var spinnerRole: Spinner? = null
@@ -29,15 +31,48 @@ class RegisterActivity : AppCompatActivity() {
         editTextEmail = findViewById(R.id.editTextEmail)
         editTextPhone = findViewById(R.id.editTextPhone)
         editTextPassword = findViewById(R.id.editTextPassword)
+        editTextFlatNo = findViewById(R.id.editTextFlatNo)
+        editTextTower = findViewById(R.id.editTextTower)
         buttonRegister = findViewById(R.id.buttonRegister)
         buttonGoToLogin = findViewById(R.id.buttonGoToLogin)
         spinnerRole = findViewById(R.id.spinnerRole)
+        editTextFlatNo?.visibility = android.view.View.GONE
+        editTextTower?.visibility = android.view.View.GONE
 
         // Role dropdown
         val roles = arrayOf("resident", "guard", "admin")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, roles)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerRole!!.adapter = adapter
+        spinnerRole!!.onItemSelectedListener =
+            object : android.widget.AdapterView.OnItemSelectedListener {
+
+                override fun onItemSelected(
+                    parent: android.widget.AdapterView<*>,
+                    view: android.view.View?,
+                    position: Int,
+                    id: Long
+                ) {
+
+                    val selectedRole =
+                        parent.getItemAtPosition(position).toString()
+
+                    if (selectedRole == "resident") {
+
+                        editTextFlatNo?.visibility = android.view.View.VISIBLE
+                        editTextTower?.visibility = android.view.View.VISIBLE
+
+                    } else {
+
+                        editTextFlatNo?.visibility = android.view.View.GONE
+                        editTextTower?.visibility = android.view.View.GONE
+                    }
+                }
+
+                override fun onNothingSelected(
+                    parent: android.widget.AdapterView<*>?
+                ) {}
+            }
 
         // ✅ Register button
         buttonRegister!!.setOnClickListener {
@@ -47,6 +82,10 @@ class RegisterActivity : AppCompatActivity() {
             val phone = editTextPhone!!.text.toString().trim()
             val password = editTextPassword!!.text.toString().trim()
             val role = spinnerRole!!.selectedItem.toString().trim().lowercase()
+            val flatNo = editTextFlatNo!!.text.toString().trim()
+            val tower = editTextTower!!.text.toString().trim()
+
+
 
             // ✅ Validations
             if (name.isEmpty()) {
@@ -69,6 +108,19 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (role == "resident") {
+
+                if (flatNo.isEmpty() || tower.isEmpty()) {
+                    Toast.makeText(
+                        this,
+                        "Enter Flat and Tower",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    return@setOnClickListener
+                }
+            }
+
             // ✅ Register user
             registerUser(
                 email,
@@ -76,6 +128,9 @@ class RegisterActivity : AppCompatActivity() {
                 name,
                 phone,
                 role,
+                flatNo,
+                tower,
+
                 {
                     runOnUiThread {
                         Toast.makeText(this, "Registration Successful!", Toast.LENGTH_SHORT).show()
