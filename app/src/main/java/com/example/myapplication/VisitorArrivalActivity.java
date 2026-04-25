@@ -145,11 +145,7 @@ public class VisitorArrivalActivity extends AppCompatActivity {
 
                     showLoading(false);
 
-                    /*
-                     * NEW:
-                     * If resident revoked approval,
-                     * guard gets alert + cannot mark arrival.
-                     */
+                    // BLOCK REVOKED VISITOR
                     if ("revoked".equals(visitor.getStatus())) {
 
                         foundVisitorId = null;
@@ -167,7 +163,7 @@ public class VisitorArrivalActivity extends AppCompatActivity {
 
                     populateResultCard(
                             visitor.getName(),
-                            visitor.isApproved(),
+                            visitor.getStatus(),
 
                             visitor.getResidentName() != null
                                     ? visitor.getResidentName()
@@ -229,7 +225,7 @@ public class VisitorArrivalActivity extends AppCompatActivity {
 
     private void populateResultCard(
             String name,
-            boolean isApproved,
+            String status,
             String approvedBy,
             String flatNo,
             String tower) {
@@ -242,7 +238,20 @@ public class VisitorArrivalActivity extends AppCompatActivity {
                         " | Tower: " + tower
         );
 
-        if (isApproved) {
+        if ("arrived".equals(status)) {
+
+            tvApprovalStatus.setText(
+                    "✓ Already Arrived"
+            );
+
+            tvApprovalStatus.setTextColor(
+                    Color.parseColor("#1565C0")
+            );
+
+            btnMarkArrival.setEnabled(false);
+
+        }
+        else if ("approved".equals(status)) {
 
             tvApprovalStatus.setText(
                     "✓ Pre-Approved"
@@ -254,7 +263,21 @@ public class VisitorArrivalActivity extends AppCompatActivity {
 
             btnMarkArrival.setEnabled(true);
 
-        } else {
+        }
+        else if ("revoked".equals(status)) {
+
+            tvApprovalStatus.setText(
+                    "✗ Revoked"
+            );
+
+            tvApprovalStatus.setTextColor(
+                    Color.parseColor("#B71C1C")
+            );
+
+            btnMarkArrival.setEnabled(false);
+
+        }
+        else {
 
             tvApprovalStatus.setText(
                     "✗ Not Approved"
