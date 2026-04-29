@@ -2,9 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -15,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
 
-        <!-- ── Launcher ──────────────────────────────────────────────── -->
+        <!-- Login Screen (Launcher) -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -27,46 +24,26 @@
             </intent-filter>
         </activity>
 
-        <!-- ── Auth ──────────────────────────────────────────────────── -->
-        <activity android:name=".LoginActivity"          android:exported="false" />
-        <activity android:name=".RegisterActivity"       android:exported="false" />
+        <!-- Register Screen -->
+        <activity android:name=".RegisterActivity" android:exported="false" />
 
-        <!-- ── Home Screens ──────────────────────────────────────────── -->
-        <activity android:name=".HomeActivity"           android:exported="false" />
-        <activity android:name=".GuardHomeActivity"      android:exported="false" />
-        <activity android:name=".ResidentHomeActivity"   android:exported="false" />
+        <!-- Home Screen -->
+        <activity android:name=".HomeActivity" android:exported="false" />
 
-        <!-- ── Visitor ───────────────────────────────────────────────── -->
+        <!-- Visitor Approve Screen (M3 - Week 2) -->
         <activity
             android:name=".VisitorApproveActivity"
             android:label="Pre-Approve Visitor"
             android:exported="false" />
+
+        <!-- Visitor Arrival Screen (M3 - Week 2) -->
         <activity
             android:name=".VisitorArrivalActivity"
             android:label="Visitor Arrival"
             android:exported="false" />
-        <activity android:name=".VisitorAuthActivity"    android:exported="false" />
-
-        <!-- ── Delivery ──────────────────────────────────────────────── -->
-        <activity android:name=".DeliveryLogActivity"    android:exported="false" />
-        <activity android:name=".DeliveryActivity"       android:exported="false" />
-
-        <!-- ── Staff ─────────────────────────────────────────────────── -->
-        <activity android:name=".StaffCheckInActivity"   android:exported="false" />
-        <activity android:name=".StaffActivity"          android:exported="false" />
-
-        <!-- ── Alerts ────────────────────────────────────────────────── -->
-        <activity android:name=".AlertsActivity"         android:exported="false" />
-        <activity android:name=".PostAlertActivity"      android:exported="false" />
-
-        <!-- ── FCM Service ───────────────────────────────────────────── -->
-        <service
-            android:name=".MyFirebaseMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
+        <activity android:name=".VisitorAuthActivity" android:exported="false" />
+        <activity android:name=".DeliveryLogActivity" android:exported="false" />
+        <activity android:name=".DeliveryActivity"    android:exported="false" />
 
     </application>
 
