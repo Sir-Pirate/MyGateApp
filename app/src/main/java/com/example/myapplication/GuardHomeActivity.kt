@@ -5,11 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.toColorInt
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.messaging.FirebaseMessaging
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -68,12 +68,13 @@ class GuardHomeActivity : AppCompatActivity() {
         setContentView(R.layout.homepage_guard)
 
         // ── FCM setup ─────────────────────────────────────────────────────────
+        // Topic subscriptions should be handled in your FirebaseMessagingService
+        // (onNewToken callback) to avoid unresolved FirebaseMessaging references.
         NotificationHelper.refreshAndSaveToken()
-        FirebaseMessaging.getInstance().subscribeToTopic("all")
-        FirebaseMessaging.getInstance().subscribeToTopic("guards")
 
         bindViews()
         setWelcomeHeader()
+        registerBackHandler()
         setClickListeners()
     }
 
@@ -106,8 +107,10 @@ class GuardHomeActivity : AppCompatActivity() {
         val user = auth.currentUser
         val name = user?.displayName?.takeIf { it.isNotBlank() }
             ?: user?.email?.substringBefore("@")
-            ?: "Guard"
-        tvWelcome?.text = "Welcome, $name!"
+            ?: getString(R.string.guard_default_name)
+
+        // Use a string resource: <string name="welcome_guard">Welcome, %1$s!</string>
+        tvWelcome?.text = getString(R.string.welcome_guard, name)
 
         val date = SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault()).format(Date())
         tvDateTime?.text = date
@@ -139,8 +142,8 @@ class GuardHomeActivity : AppCompatActivity() {
                 val sosCount = alerts.count { it.isSOS }
                 tvStatAlerts?.text = sosCount.toString()
                 // Red if active SOS, neutral green if clear
-                val color = if (sosCount > 0) "#B71C1C" else "#2E7D32"
-                tvStatAlerts?.setTextColor(android.graphics.Color.parseColor(color))
+                val colorHex = if (sosCount > 0) "#B71C1C" else "#2E7D32"
+                tvStatAlerts?.setTextColor(colorHex.toColorInt())
             },
             { /* silently ignore */ }
         )
@@ -178,32 +181,35 @@ class GuardHomeActivity : AppCompatActivity() {
         btnLogout?.setOnClickListener { showLogoutDialog() }
     }
 
+    // ── Back Press (AndroidX OnBackPressedDispatcher) ──────────────────────────
+    private fun registerBackHandler() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                AlertDialog.Builder(this@GuardHomeActivity)
+                    .setTitle(getString(R.string.exit_title))
+                    .setMessage(getString(R.string.exit_message))
+                    .setPositiveButton(getString(R.string.exit_confirm)) { _, _ ->
+                        finishAffinity()
+                    }
+                    .setNegativeButton(getString(R.string.cancel), null)
+                    .show()
+            }
+        })
+    }
+
     // ── Logout ─────────────────────────────────────────────────────────────────
     private fun showLogoutDialog() {
         AlertDialog.Builder(this)
-            .setTitle("Logout")
-            .setMessage("Are you sure you want to logout?")
-            .setPositiveButton("Yes, Logout") { _, _ ->
+            .setTitle(getString(R.string.logout_title))
+            .setMessage(getString(R.string.logout_message))
+            .setPositiveButton(getString(R.string.logout_confirm)) { _, _ ->
                 auth.signOut()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
                 finish()
             }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
-    // ── Back press → confirm exit ──────────────────────────────────────────────
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        AlertDialog.Builder(this)
-            .setTitle("Exit")
-            .setMessage("Do you want to exit the app?")
-            .setPositiveButton("Exit") { _, _ ->
-                finishAffinity()
-            }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 }

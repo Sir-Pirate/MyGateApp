@@ -25,13 +25,13 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        editTextName = findViewById(R.id.editTextName)
-        editTextEmail = findViewById(R.id.editTextEmail)
-        editTextPhone = findViewById(R.id.editTextPhone)
+        editTextName     = findViewById(R.id.editTextName)
+        editTextEmail    = findViewById(R.id.editTextEmail)
+        editTextPhone    = findViewById(R.id.editTextPhone)
         editTextPassword = findViewById(R.id.editTextPassword)
-        buttonRegister = findViewById(R.id.buttonRegister)
-        buttonGoToLogin = findViewById(R.id.buttonGoToLogin)
-        spinnerRole = findViewById(R.id.spinnerRole)
+        buttonRegister   = findViewById(R.id.buttonRegister)
+        buttonGoToLogin  = findViewById(R.id.buttonGoToLogin)
+        spinnerRole      = findViewById(R.id.spinnerRole)
 
         // Role dropdown
         val roles = arrayOf("resident", "guard", "admin")
@@ -39,48 +39,45 @@ class RegisterActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerRole!!.adapter = adapter
 
-        // ✅ Register button
         buttonRegister!!.setOnClickListener {
-
-            val name = editTextName!!.text.toString().trim()
-            val email = editTextEmail!!.text.toString().trim()
-            val phone = editTextPhone!!.text.toString().trim()
+            val name     = editTextName!!.text.toString().trim()
+            val email    = editTextEmail!!.text.toString().trim()
+            val phone    = editTextPhone!!.text.toString().trim()
             val password = editTextPassword!!.text.toString().trim()
-            val role = spinnerRole!!.selectedItem.toString().trim().lowercase()
+            val role     = spinnerRole!!.selectedItem.toString().trim().lowercase()
 
-            // ✅ Validations
+            // Validations
             if (name.isEmpty()) {
                 Toast.makeText(this, "Enter your name", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 Toast.makeText(this, "Enter valid email address", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
             if (phone.length != 10 || !phone.matches("[0-9]+".toRegex())) {
                 Toast.makeText(this, "Enter valid 10-digit phone number", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
             if (password.length < 6) {
                 Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // ✅ Register user
             registerUser(
-                email,
-                password,
-                name,
-                phone,
-                role,
+                email, password, name, phone, role,
                 {
                     runOnUiThread {
                         Toast.makeText(this, "Registration Successful!", Toast.LENGTH_SHORT).show()
 
-                        val intent = Intent(this, HomeActivity::class.java)
+                        // ── Route to the correct home screen based on role ─────
+                        val destination = when (role) {
+                            "guard" -> GuardHomeActivity::class.java
+                            "admin" -> HomeActivity::class.java
+                            else    -> ResidentHomeActivity::class.java
+                        }
+
+                        val intent = Intent(this, destination)
                         intent.putExtra("role", role)
                         startActivity(intent)
                         finish()
@@ -94,10 +91,8 @@ class RegisterActivity : AppCompatActivity() {
             )
         }
 
-        // ✅ Login button
         buttonGoToLogin!!.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
     }
