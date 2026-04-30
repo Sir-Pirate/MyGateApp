@@ -2,7 +2,6 @@ package com.example.myapplication
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -10,35 +9,47 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.AuthManager.loginUser
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlin.jvm.java
 
 class MainActivity : AppCompatActivity() {
 
-    private var editTextUsername: EditText? = null
-    private var editTextPassword: EditText? = null
-    private var buttonLogin: Button? = null
-    private var buttonGoToRegister: Button? = null
+    private lateinit var editTextUsername: EditText
+    private lateinit var editTextPassword: EditText
+    private lateinit var buttonLogin: Button
+    private lateinit var buttonGoToRegister: Button
 
-    private val db = FirebaseFirestore.getInstance()
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.loginpage)
 
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+
+        initializeViews()
+        setupLoginButton()
+        setupRegisterButton()
+    }
+
+    private fun initializeViews() {
         editTextUsername = findViewById(R.id.editTextUsername)
         editTextPassword = findViewById(R.id.editTextPassword)
         buttonLogin = findViewById(R.id.buttonLogin)
         buttonGoToRegister = findViewById(R.id.buttonGoToRegister)
+    }
 
-        // Login button
-        buttonLogin!!.setOnClickListener {
-            val email = editTextUsername!!.text.toString().trim()
-            val password = editTextPassword!!.text.toString().trim()
+    private fun setupLoginButton() {
+
+        buttonLogin.setOnClickListener {
+
+            val email = editTextUsername.text.toString().trim()
+            val password = editTextPassword.text.toString().trim()
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(
-                    applicationContext,
-                    "Please enter both fields",
+                    this,
+                    "Please enter both email and password",
                     Toast.LENGTH_SHORT
                 ).show()
                 return@setOnClickListener
@@ -47,91 +58,141 @@ class MainActivity : AppCompatActivity() {
             loginUser(
                 email,
                 password,
-                {
-                    runOnUiThread {
+
+                onSuccess = {
+
+                    val currentUser = auth.currentUser
+
+                    if (currentUser != null) {
 
                         Toast.makeText(
-                            applicationContext,
+                            this,
                             "Welcome back!",
                             Toast.LENGTH_SHORT
                         ).show()
 
-                        val user = FirebaseAuth.getInstance().currentUser
+                        fetchUserRoleAndNavigate(currentUser.uid)
 
-                        if (user != null) {
-                            val uid = user.uid
+                    } else {
 
-                            db.collection("users").document(uid).get()
-                                .addOnSuccessListener { document ->
-
-                                    if (document.exists()) {
-                                        val roleFromFirestore =
-                                            document.getString("role") ?: "resident"
-
-                                        val intent = Intent(
-                                            this@MainActivity,
-                                            HomeActivity::class.java
-                                        )
-                                        intent.putExtra("role", roleFromFirestore)
-                                        startActivity(intent)
-                                        finish()
-
-                                    } else {
-                                        Toast.makeText(
-                                            this@MainActivity,
-                                            "User data not found",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-                                .addOnFailureListener {
-                                    Toast.makeText(
-                                        this@MainActivity,
-                                        "Something went wrong. Try again.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-
-                        } else {
-                            Toast.makeText(
-                                this@MainActivity,
-                                "User not logged in",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                        Toast.makeText(
+                            this,
+                            "Authentication failed",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 },
-                { errorMessage: String? ->
 
-                    runOnUiThread {
+                onError = { errorMessage ->
 
-                        val message = when {
-                            errorMessage?.contains("badly formatted", true) == true ->
-                                "Invalid email format"
+                    val message = when {
 
-                            errorMessage?.contains("password is invalid", true) == true ->
-                                "Incorrect password"
+                        errorMessage.contains("badly formatted", true) ->
+                            "Invalid email format"
 
-                            errorMessage?.contains("no user record", true) == true ->
-                                "User not found. Please register first"
+                        errorMessage.contains("password is invalid", true) ->
+                            "Incorrect password"
 
-                            errorMessage?.contains("network error", true) == true ->
-                                "Check your internet connection"
+                        errorMessage.contains("no user record", true) ->
+                            "User not found. Please register first"
 
-                            else ->
-                                "Login failed. Please try again"
-                        }
+                        errorMessage.contains("network error", true) ->
+                            "Check your internet connection"
 
-                        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+                        else ->
+                            "Login failed. Please try again"
                     }
+
+                    Toast.makeText(
+                        this,
+                        message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             )
         }
+    }
 
-        // Go to Register button
-        buttonGoToRegister!!.setOnClickListener {
-            val intent = Intent(this@MainActivity, RegisterActivity::class.java)
-            startActivity(intent)
+    private fun fetchUserRoleAndNavigate(uid: String) {
+
+        db.collection("users")
+            .document(uid)
+            .get()
+            .addOnSuccessListener { document ->
+
+                if (document.exists()) {
+
+                    val role = document.getString("role") ?: "resident"
+
+                    navigateUserByRole(role)
+
+                } else {
+
+                    Toast.makeText(
+                        this,
+                        "User profile not found",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            .addOnFailureListener {
+
+                Toast.makeText(
+                    this,
+                    "Failed to retrieve user role",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
+
+    private fun navigateUserByRole(role: String) {
+
+        val normalizedRole = role.trim().lowercase()
+
+        val destination = when (normalizedRole) {
+
+            "admin" -> HomeActivity::class.java
+
+            "guard" -> GuardHomeActivity::class.java
+
+            "resident" -> ResidentHomeActivity::class.java
+
+            else -> HomeActivity::class.java
+        }
+
+        val intent = Intent(this, destination)
+
+        intent.putExtra("role", normalizedRole)
+
+        intent.flags =
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+        startActivity(intent)
+
+        finish()
+    }
+
+    private fun setupRegisterButton() {
+
+        buttonGoToRegister.setOnClickListener {
+
+            try {
+
+                val intent = Intent(
+                    this@MainActivity,
+                    RegisterActivity::class.java
+                )
+
+                startActivity(intent)
+
+            } catch (e: Exception) {
+
+                Toast.makeText(
+                    this,
+                    "Register page not available",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 }

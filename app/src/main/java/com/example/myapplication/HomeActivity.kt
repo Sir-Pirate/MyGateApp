@@ -1,66 +1,68 @@
 package com.example.myapplication
 
-import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.messaging.FirebaseMessaging
 
 class HomeActivity : AppCompatActivity() {
 
-    private var btnGoToVisitorApprove: LinearLayout? = null
-    private var btnGoToVisitorArrival: LinearLayout? = null
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
-    private var userRole: String? = null
+    private lateinit var tvWelcome: TextView
+    private lateinit var tvDateTime: TextView
+    private lateinit var tvStatVisitors: TextView
+    private lateinit var tvStatDeliveries: TextView
+    private lateinit var tvStatAlerts: TextView
 
-    private var btnVisitorAuth: LinearLayout? = null
-    private var btnDelivery: LinearLayout? = null
-    private var btnStaff: LinearLayout? = null
-    private var btnAlerts: LinearLayout? = null
-    private var btnResidents: LinearLayout? = null
-    private var btnNotices: LinearLayout? = null
-    private var btnMyProfile: LinearLayout? = null
-    private var btnParking: LinearLayout? = null
-    private var btnSOS: LinearLayout? = null
+    private lateinit var btnVisitorApprove: View
+    private lateinit var btnVisitorArrival: View
+    private lateinit var btnVisitorAuth: View
+    private lateinit var btnDelivery: View
+    private lateinit var btnStaff: View
+    private lateinit var btnAlerts: View
+    private lateinit var btnResidents: View
+    private lateinit var btnNotices: View
+    private lateinit var btnMyProfile: View
+    private lateinit var btnParking: View
+    private lateinit var btnSOS: View
+    private lateinit var btnLogout: MaterialButton
 
-    private var tvWelcome: TextView? = null
-    private var tvDateTime: TextView? = null
-
-    private var btnLogout: MaterialButton? = null
-
-    private val auth = FirebaseAuth.getInstance()
-
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.homepage)
 
-        userRole = intent.getStringExtra("role")
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
-        bindViews()
-        setWelcomeHeader()
-        applyRoleBasedUI()
-        setClickListeners()
+        initializeViews()
+        setupWelcomeMessage()
+        setupDateTime()
+        setupButtonListeners()
+        loadDashboardStats()
+        setupBackPressHandler()
     }
 
-    private fun bindViews() {
+    private fun initializeViews() {
         tvWelcome = findViewById(R.id.tvWelcome)
         tvDateTime = findViewById(R.id.tvDateTime)
+        tvStatVisitors = findViewById(R.id.tvStatVisitors)
+        tvStatDeliveries = findViewById(R.id.tvStatDeliveries)
+        tvStatAlerts = findViewById(R.id.tvStatAlerts)
 
-        btnGoToVisitorApprove = findViewById(R.id.btnGoToVisitorApprove)
-        btnGoToVisitorArrival = findViewById(R.id.btnGoToVisitorArrival)
-
+        btnVisitorApprove = findViewById(R.id.btnGoToVisitorApprove)
+        btnVisitorArrival = findViewById(R.id.btnGoToVisitorArrival)
         btnVisitorAuth = findViewById(R.id.btnVisitorAuth)
         btnDelivery = findViewById(R.id.btnDelivery)
         btnStaff = findViewById(R.id.btnStaff)
@@ -70,192 +72,176 @@ class HomeActivity : AppCompatActivity() {
         btnMyProfile = findViewById(R.id.btnMyProfile)
         btnParking = findViewById(R.id.btnParking)
         btnSOS = findViewById(R.id.btnSOS)
-
         btnLogout = findViewById(R.id.btnLogout)
     }
 
-    private fun setWelcomeHeader() {
+    private fun setupWelcomeMessage() {
         val user = auth.currentUser
-        if (user?.email != null) {
-            val name = user.email!!.substringBefore("@")
-            tvWelcome?.text = "Welcome, $name!"
-        }
 
-        val date = SimpleDateFormat("EEE, dd MMM", Locale.getDefault()).format(Date())
-        tvDateTime?.text = date
-    }
+        if (user != null) {
+            db.collection("users")
+                .document(user.uid)
+                .get()
+                .addOnSuccessListener { document ->
 
-    private fun applyRoleBasedUI() {
+                    val name = document.getString("name") ?: "Admin"
 
-        if (userRole == null) {
-            Toast.makeText(this, "Role missing", Toast.LENGTH_SHORT).show()
-            hideSensitiveFeatures()
-            return
-        }
-
-        when (userRole) {
-
-            "resident" -> {
-                btnGoToVisitorArrival?.visibility = View.GONE
-                btnVisitorAuth?.visibility = View.VISIBLE
-
-                btnDelivery?.visibility = View.GONE
-                btnDelivery?.isEnabled = false
-                btnDelivery?.setOnClickListener(null)
-
-                // Save this device's FCM token for resident notifications
-                val uid = auth.currentUser?.uid
-
-                if (uid != null) {
-
-                    FirebaseMessaging.getInstance()
-                        .token
-                        .addOnSuccessListener { token ->
-
-                            FirebaseFirestore.getInstance()
-                                .collection("users")
-                                .document(uid)
-                                .update("fcmToken", token)
-                        }
+                    tvWelcome.text = "Welcome, $name!"
                 }
-            }
-
-            "guard" -> {
-                btnGoToVisitorApprove?.visibility = View.GONE
-
-                btnNotices?.visibility = View.GONE
-                btnMyProfile?.visibility = View.GONE
-                btnParking?.visibility = View.GONE
-                btnSOS?.visibility = View.GONE
-            }
-
-            "admin" -> {
-                // full access
-            }
-
-            else -> {
-                Toast.makeText(this, "Invalid role", Toast.LENGTH_SHORT).show()
-                hideSensitiveFeatures()
-            }
+                .addOnFailureListener {
+                    tvWelcome.text = "Welcome, Admin!"
+                }
         }
     }
 
-    // SAFETY FALLBACK
-    private fun hideSensitiveFeatures() {
-        btnDelivery?.visibility = View.GONE
-        btnGoToVisitorApprove?.visibility = View.GONE
-        btnVisitorAuth?.visibility = View.GONE
+    private fun setupDateTime() {
+        val currentDate = SimpleDateFormat(
+            "EEE, dd MMM",
+            Locale.getDefault()
+        ).format(Date())
+
+        tvDateTime.text = currentDate
     }
 
-    private fun setClickListeners() {
+    private fun setupButtonListeners() {
 
-        btnGoToVisitorApprove?.setOnClickListener {
-            val intent = Intent(this, VisitorApproveActivity::class.java)
-            intent.putExtra("role", userRole)
-            startActivity(intent)
+        btnVisitorApprove.setOnClickListener {
+            startActivity(Intent(this, VisitorApproveActivity::class.java))
         }
 
-        btnGoToVisitorArrival?.setOnClickListener {
+        btnVisitorArrival.setOnClickListener {
             startActivity(Intent(this, VisitorArrivalActivity::class.java))
         }
 
-        btnVisitorAuth?.setOnClickListener {
-
-            val intent = Intent(
-                this,
-                VisitorAuthActivity::class.java
-            )
-
-            intent.putExtra(
-                "role",
-                userRole
-            )
-
-            startActivity(intent)
+        btnVisitorAuth.setOnClickListener {
+            startActivity(Intent(this, VisitorAuthActivity::class.java))
         }
 
-        //FINAL DELIVERY SAFETY CHECK
-        btnDelivery?.setOnClickListener {
-
-            if (userRole == "resident") {
-                Toast.makeText(this, "Not allowed", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
+        btnDelivery.setOnClickListener {
             startActivity(Intent(this, DeliveryLogActivity::class.java))
         }
 
-        btnStaff?.setOnClickListener {
-
-            // Replace showComingSoon("Staff Entry") with:
+        btnStaff.setOnClickListener {
             startActivity(Intent(this, StaffCheckInActivity::class.java))
         }
 
-        btnAlerts?.setOnClickListener {
-
-            startActivity(
-                Intent(
-                    this,
-                    AlertsActivity::class.java
-                )
-            )
+        btnAlerts.setOnClickListener {
+            startActivity(Intent(this, AlertsActivity::class.java))
         }
 
-        btnResidents?.setOnClickListener {
-            showComingSoon("Residents Directory")
+        btnResidents.setOnClickListener {
+            Toast.makeText(
+                this,
+                "Residents Directory Coming Soon",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
-        btnNotices?.setOnClickListener {
-            showComingSoon("Notices Board")
+        btnNotices.setOnClickListener {
+            Toast.makeText(
+                this,
+                "Notices Module Coming Soon",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
-        btnMyProfile?.setOnClickListener {
-            showComingSoon("My Profile")
+        btnMyProfile.setOnClickListener {
+            Toast.makeText(
+                this,
+                "Profile Module Coming Soon",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
-        btnParking?.setOnClickListener {
-            showComingSoon("Parking Management")
+        btnParking.setOnClickListener {
+            Toast.makeText(
+                this,
+                "Parking Module Coming Soon",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
-        btnSOS?.setOnClickListener {
-            showSOSDialog()
+        btnSOS.setOnClickListener {
+            Toast.makeText(
+                this,
+                "SOS Module Coming Soon",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
-        btnLogout?.setOnClickListener {
+        btnLogout.setOnClickListener {
             showLogoutDialog()
         }
     }
 
-    private fun showComingSoon(feature: String) {
-        Toast.makeText(this, "$feature — Coming Soon!", Toast.LENGTH_SHORT).show()
+    private fun loadDashboardStats() {
+
+        db.collection("visitor_requests")
+            .get()
+            .addOnSuccessListener { result ->
+                tvStatVisitors.text = result.size().toString()
+            }
+            .addOnFailureListener {
+                tvStatVisitors.text = "0"
+            }
+
+        db.collection("deliveries")
+            .get()
+            .addOnSuccessListener { result ->
+                tvStatDeliveries.text = result.size().toString()
+            }
+            .addOnFailureListener {
+                tvStatDeliveries.text = "0"
+            }
+
+        db.collection("alerts")
+            .get()
+            .addOnSuccessListener { result ->
+                tvStatAlerts.text = result.size().toString()
+            }
+            .addOnFailureListener {
+                tvStatAlerts.text = "0"
+            }
     }
 
     private fun showLogoutDialog() {
         AlertDialog.Builder(this)
             .setTitle("Logout")
             .setMessage("Are you sure you want to logout?")
-            .setPositiveButton("Yes, Logout") { _, _ ->
+            .setPositiveButton("Logout") { _, _ ->
 
                 auth.signOut()
 
-                val intent = Intent(this,MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
+                val intent = Intent(this, MainActivity::class.java)
 
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                startActivity(intent)
                 finish()
             }
             .setNegativeButton("Cancel", null)
             .show()
     }
 
-    private fun showSOSDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("🆘 Emergency SOS")
-            .setMessage("Send alert to security?")
-            .setPositiveButton("Send") { _, _ ->
-                Toast.makeText(this, "SOS Sent!", Toast.LENGTH_SHORT).show()
+    private fun setupBackPressHandler() {
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+
+                override fun handleOnBackPressed() {
+
+                    AlertDialog.Builder(this@HomeActivity)
+                        .setTitle("Exit App")
+                        .setMessage("Do you want to close MyGate?")
+                        .setPositiveButton("Exit") { _, _ ->
+                            finishAffinity()
+                        }
+                        .setNegativeButton("Cancel", null)
+                        .show()
+                }
             }
-            .setNegativeButton("Cancel", null)
-            .show()
+        )
     }
 }

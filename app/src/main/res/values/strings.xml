@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- App Name -->
     <string name="app_name">MyGate</string>
 
-    <!-- Guard Home -->
+    <!-- Default Roles -->
     <string name="guard_default_name">Guard</string>
+
+    <!-- Welcome Messages -->
     <string name="welcome_guard">Welcome, %1$s!</string>
 
-    <!-- Shared Dialogs -->
+    <!-- Logout Dialog -->
     <string name="logout_title">Logout</string>
     <string name="logout_message">Are you sure you want to logout?</string>
-    <string name="logout_confirm">Yes, Logout</string>
-    <string name="exit_title">Exit</string>
-    <string name="exit_message">Do you want to exit the app?</string>
+    <string name="logout_confirm">Logout</string>
+
+    <!-- Exit Dialog -->
+    <string name="exit_title">Exit App</string>
+    <string name="exit_message">Do you want to close MyGate?</string>
     <string name="exit_confirm">Exit</string>
+
+    <!-- Shared -->
     <string name="cancel">Cancel</string>
+
 </resources>

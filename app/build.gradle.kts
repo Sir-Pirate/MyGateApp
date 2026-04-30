@@ -68,4 +68,9 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("com.google.android.material:material:1.11.0")
     implementation("com.google.firebase:firebase-messaging:23.1.0")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.android.material:material")
+    implementation("androidx.cardview:cardview:1.0.0")
 }
