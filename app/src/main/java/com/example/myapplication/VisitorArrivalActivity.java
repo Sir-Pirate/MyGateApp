@@ -35,6 +35,9 @@ public class VisitorArrivalActivity extends AppCompatActivity {
 
     private String foundVisitorId = null;
 
+    // ✅ NEW: Prevent multiple clicks
+    private boolean isMarkingArrival = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,10 +94,12 @@ public class VisitorArrivalActivity extends AppCompatActivity {
 
         btnMarkArrival.setOnClickListener(v -> {
 
+            // ✅ FIX: Prevent double clicks
+            if (isMarkingArrival) return;
+
             if (foundVisitorId != null) {
                 markArrived(foundVisitorId);
             } else {
-
                 showStatus(
                         "No visitor selected. Search first.",
                         true
@@ -145,7 +150,6 @@ public class VisitorArrivalActivity extends AppCompatActivity {
 
                     showLoading(false);
 
-                    // BLOCK REVOKED VISITOR
                     if ("revoked".equals(visitor.getStatus())) {
 
                         foundVisitorId = null;
@@ -193,6 +197,10 @@ public class VisitorArrivalActivity extends AppCompatActivity {
 
     private void markArrived(String visitorId) {
 
+        // ✅ LOCK
+        isMarkingArrival = true;
+        btnMarkArrival.setEnabled(false);
+
         showLoading(true);
 
         VisitorManager.markVisitorArrived(
@@ -208,7 +216,7 @@ public class VisitorArrivalActivity extends AppCompatActivity {
                             false
                     );
 
-                    btnMarkArrival.setEnabled(false);
+                    // keep button disabled
                 },
 
                 errorMsg -> {
@@ -219,6 +227,10 @@ public class VisitorArrivalActivity extends AppCompatActivity {
                             "✗ Could not log arrival: " + errorMsg,
                             true
                     );
+
+                    // ✅ UNLOCK if failed
+                    isMarkingArrival = false;
+                    btnMarkArrival.setEnabled(true);
                 }
         );
     }
@@ -240,75 +252,42 @@ public class VisitorArrivalActivity extends AppCompatActivity {
 
         if ("arrived".equals(status)) {
 
-            tvApprovalStatus.setText(
-                    "✓ Already Arrived"
-            );
-
-            tvApprovalStatus.setTextColor(
-                    Color.parseColor("#1565C0")
-            );
-
+            tvApprovalStatus.setText("✓ Already Arrived");
+            tvApprovalStatus.setTextColor(Color.parseColor("#1565C0"));
             btnMarkArrival.setEnabled(false);
 
         }
         else if ("approved".equals(status)) {
 
-            tvApprovalStatus.setText(
-                    "✓ Pre-Approved"
-            );
-
-            tvApprovalStatus.setTextColor(
-                    Color.parseColor("#1B5E20")
-            );
-
+            tvApprovalStatus.setText("✓ Pre-Approved");
+            tvApprovalStatus.setTextColor(Color.parseColor("#1B5E20"));
             btnMarkArrival.setEnabled(true);
 
         }
         else if ("revoked".equals(status)) {
 
-            tvApprovalStatus.setText(
-                    "✗ Revoked"
-            );
-
-            tvApprovalStatus.setTextColor(
-                    Color.parseColor("#B71C1C")
-            );
-
+            tvApprovalStatus.setText("✗ Revoked");
+            tvApprovalStatus.setTextColor(Color.parseColor("#B71C1C"));
             btnMarkArrival.setEnabled(false);
 
         }
         else {
 
-            tvApprovalStatus.setText(
-                    "✗ Not Approved"
-            );
-
-            tvApprovalStatus.setTextColor(
-                    Color.parseColor("#B71C1C")
-            );
-
+            tvApprovalStatus.setText("✗ Not Approved");
+            tvApprovalStatus.setTextColor(Color.parseColor("#B71C1C"));
             btnMarkArrival.setEnabled(false);
         }
 
-        cardVisitorResult.setVisibility(
-                View.VISIBLE
-        );
+        cardVisitorResult.setVisibility(View.VISIBLE);
     }
 
     private void hideResultCard() {
-
-        cardVisitorResult.setVisibility(
-                View.GONE
-        );
-
+        cardVisitorResult.setVisibility(View.GONE);
         foundVisitorId = null;
     }
 
     private void hideStatus() {
-
-        tvArrivalStatus.setVisibility(
-                View.GONE
-        );
+        tvArrivalStatus.setVisibility(View.GONE);
     }
 
     private void showLoading(boolean show) {
@@ -318,13 +297,10 @@ public class VisitorArrivalActivity extends AppCompatActivity {
         );
 
         btnCheckApproval.setEnabled(!show);
-
         btnArrivalBackToHome.setEnabled(!show);
     }
 
-    private void showStatus(
-            String message,
-            boolean isError) {
+    private void showStatus(String message, boolean isError) {
 
         tvArrivalStatus.setText(message);
 
@@ -340,18 +316,13 @@ public class VisitorArrivalActivity extends AppCompatActivity {
                         : Color.parseColor("#E8F5E9")
         );
 
-        tvArrivalStatus.setVisibility(
-                View.VISIBLE
-        );
+        tvArrivalStatus.setVisibility(View.VISIBLE);
     }
 
     private void navigateToHome() {
 
         Intent intent =
-                new Intent(
-                        this,
-                        HomeActivity.class
-                );
+                new Intent(this, HomeActivity.class);
 
         intent.setFlags(
                 Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -359,7 +330,6 @@ public class VisitorArrivalActivity extends AppCompatActivity {
         );
 
         startActivity(intent);
-
         finish();
     }
 }

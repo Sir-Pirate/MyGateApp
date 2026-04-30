@@ -169,14 +169,11 @@ public class VisitorManager {
                         return;
                     }
 
-                    String currentStatus =
-                            visitorDoc.getString(
-                                    "status"
-                            );
+                    String currentStatus = visitorDoc.getString("status");
 
-                    // Prevent duplicate arrival alerts
+// Prevent duplicate arrival alerts STRICTLY
                     if ("arrived".equals(currentStatus)) {
-                        onSuccess.onSuccess();
+                        onFailure.onFailure("Visitor already marked as arrived");
                         return;
                     }
 
@@ -290,7 +287,7 @@ public class VisitorManager {
                                 );
 
                                 alert.put(
-                                        "isRead",
+                                        "read",
                                         false
                                 );
 
