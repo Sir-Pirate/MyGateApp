@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Empty Text -->
+            <TextView
+                android:id="@+id/tvEmptyStaff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No staff added yet"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="20dp"/>
+
+            <!-- Staff List Container -->
+            <LinearLayout
+                android:id="@+id/layoutStaffList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Add Staff Button (BOTTOM FIXED) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnAddNewStaff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="+ Add Staff"
+        android:layout_margin="16dp"/>
+
+</LinearLayout>

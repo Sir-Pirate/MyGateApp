@@ -45,6 +45,11 @@
         <activity android:name=".DeliveryLogActivity" android:exported="false" />
         <activity android:name=".DeliveryActivity"    android:exported="false" />
         <activity android:name=".AlertsActivity"/>
+        <activity android:name=".AddStaffActivity" />
+        <activity android:name=".StaffEntryActivity" />
+        <activity android:name=".StaffHistoryActivity" />
+        <activity android:name=".StaffListActivity" />
+        <activity android:name=".StaffMenuActivity" />
         <!-- messaging service firebase -->
         <service
             android:name=".MyFirebaseMessagingService"

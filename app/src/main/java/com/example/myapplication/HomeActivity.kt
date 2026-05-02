@@ -2,7 +2,6 @@ package com.example.myapplication
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -104,15 +103,12 @@ class HomeActivity : AppCompatActivity() {
                 btnDelivery?.isEnabled = false
                 btnDelivery?.setOnClickListener(null)
 
-                // Save this device's FCM token for resident notifications
+                // Save FCM token
                 val uid = auth.currentUser?.uid
-
                 if (uid != null) {
-
                     FirebaseMessaging.getInstance()
                         .token
                         .addOnSuccessListener { token ->
-
                             FirebaseFirestore.getInstance()
                                 .collection("users")
                                 .document(uid)
@@ -141,7 +137,6 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    // SAFETY FALLBACK
     private fun hideSensitiveFeatures() {
         btnDelivery?.visibility = View.GONE
         btnGoToVisitorApprove?.visibility = View.GONE
@@ -161,43 +156,43 @@ class HomeActivity : AppCompatActivity() {
         }
 
         btnVisitorAuth?.setOnClickListener {
-
-            val intent = Intent(
-                this,
-                VisitorAuthActivity::class.java
-            )
-
-            intent.putExtra(
-                "role",
-                userRole
-            )
-
+            val intent = Intent(this, VisitorAuthActivity::class.java)
+            intent.putExtra("role", userRole)
             startActivity(intent)
         }
 
-        //FINAL DELIVERY SAFETY CHECK
         btnDelivery?.setOnClickListener {
-
             if (userRole == "resident") {
                 Toast.makeText(this, "Not allowed", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
             startActivity(Intent(this, DeliveryLogActivity::class.java))
         }
 
+        // ✅ FINAL STAFF FLOW
         btnStaff?.setOnClickListener {
-            showComingSoon("Staff Entry")
+
+            if (userRole == "guard") {
+
+                startActivity(
+                    Intent(this, StaffEntryActivity::class.java)
+                )
+
+            } else if (userRole == "resident") {
+
+                // 🔥 NEW: open menu instead of directly adding
+                startActivity(
+                    Intent(this, StaffMenuActivity::class.java)
+                )
+
+            } else {
+
+                showComingSoon("Staff Feature")
+            }
         }
 
         btnAlerts?.setOnClickListener {
-
-            startActivity(
-                Intent(
-                    this,
-                    AlertsActivity::class.java
-                )
-            )
+            startActivity(Intent(this, AlertsActivity::class.java))
         }
 
         btnResidents?.setOnClickListener {
@@ -237,7 +232,7 @@ class HomeActivity : AppCompatActivity() {
 
                 auth.signOut()
 
-                val intent = Intent(this,MainActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
 
