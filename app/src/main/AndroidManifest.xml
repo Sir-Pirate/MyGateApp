@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
 
+
         <!-- Login Screen (Launcher) -->
         <activity
             android:name=".MainActivity"
@@ -45,6 +46,9 @@
         <activity android:name=".DeliveryLogActivity" android:exported="false" />
         <activity android:name=".DeliveryActivity"    android:exported="false" />
         <activity android:name=".AlertsActivity"/>
+
+        <!-- Staff Entry Activity-->
+        <activity android:name=".StaffEntryActivity" android:exported="false" />
         <!-- messaging service firebase -->
         <service
             android:name=".MyFirebaseMessagingService"

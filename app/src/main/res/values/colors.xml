@@ -7,4 +7,30 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- Teal palette -->
+    <color name="teal_50">#E1F5EE</color>
+    <color name="teal_100">#9FE1CB</color>
+    <color name="teal_600">#1D9E75</color>
+    <color name="teal_800">#085041</color>
+
+    <!-- Coral palette -->
+    <color name="coral_50">#FAECE7</color>
+    <color name="coral_100">#F5C4B3</color>
+    <color name="coral_600">#D85A30</color>
+    <color name="coral_800">#4A1B0C</color>
+
+    <!-- Backgrounds -->
+    <color name="bg_page">#F6F5F0</color>
+    <color name="card_bg">#FFFFFF</color>
+    <color name="bg_icon_box">#F1EFE8</color>
+
+    <!-- Text -->
+    <color name="text_primary">#1C1C1E</color>
+    <color name="text_secondary">#6E6E6E</color>
+    <color name="text_tertiary">#A0A0A0</color>
+
+    <!-- Borders / Dividers -->
+    <color name="divider_color">#E5E5E5</color>
+    <color name="input_stroke_color">#D3D1C7</color>
+    <color name="input_stroke_focused">#1D9E75</color>
 </resources>

@@ -128,6 +128,14 @@ class HomeActivity : AppCompatActivity() {
                 btnMyProfile?.visibility = View.GONE
                 btnParking?.visibility = View.GONE
                 btnSOS?.visibility = View.GONE
+
+                btnStaff?.visibility = View.VISIBLE
+
+                btnStaff?.setOnClickListener {
+                    Toast.makeText(this, "Staff clicked", Toast.LENGTH_SHORT).show()
+
+                    startActivity(Intent(this, StaffEntryActivity::class.java))
+                }
             }
 
             "admin" -> {
@@ -186,9 +194,6 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, DeliveryLogActivity::class.java))
         }
 
-        btnStaff?.setOnClickListener {
-            showComingSoon("Staff Entry")
-        }
 
         btnAlerts?.setOnClickListener {
 

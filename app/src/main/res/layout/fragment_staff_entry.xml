@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- ── Header ── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="28dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ATTENDANCE SYSTEM"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.12"
+                android:textColor="@color/text_tertiary"
+                android:layout_marginBottom="6dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Staff "
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Entry"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/teal_600" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="32dp"
+                android:layout_height="2dp"
+                android:background="@color/teal_600"
+                android:layout_marginTop="10dp" />
+        </LinearLayout>
+
+        <!-- ── Phone Input Section ── -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="STAFF PHONE NUMBER"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <!-- Country code prefix -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="52dp"
+                android:text="+91"
+                android:gravity="center"
+                android:paddingHorizontal="14dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_secondary"
+                android:background="@drawable/bg_prefix_box"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Phone field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxCornerRadiusTopStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxStrokeColor="@color/input_stroke_selector"
+                app:boxStrokeWidth="1dp"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etStaffPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:hint="10-digit number"
+                    android:inputType="phone"
+                    android:maxLength="10"
+                    android:textSize="15sp"
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="sans-serif-medium" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- ── Search Button ── -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSearchStaff"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Search Staff"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.04"
+            android:layout_marginBottom="24dp"
+            app:cornerRadius="10dp"
+            app:backgroundTint="@color/teal_600"
+            app:icon="@drawable/ic_search"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp" />
+
+        <!-- ── Staff Result Card ── -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardStaffResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/card_bg">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <!-- Avatar + Name Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <!-- Avatar circle -->
+                    <FrameLayout
+                        android:id="@+id/avatarFrame"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="14dp">
+
+                        <View
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_avatar" />
+
+                        <TextView
+                            android:id="@+id/tvAvatarInitials"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textSize="17sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/teal_800" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvStaffName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="4dp" />
+
+                        <!-- Role badge -->
+                        <TextView
+                            android:id="@+id/tvStaffRole"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="3dp"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/teal_800"
+                            android:background="@drawable/bg_role_badge" />
+                    </LinearLayout>
+
+                    <!-- Active indicator -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_status_active"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="5dp">
+
+                        <View
+                            android:layout_width="6dp"
+                            android:layout_height="6dp"
+                            android:background="@drawable/bg_dot_active"
+                            android:layout_marginEnd="5dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/teal_800" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/divider_color"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Shift row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <FrameLayout
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:background="@drawable/bg_icon_box"
+                        android:layout_marginEnd="10dp">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_clock"
+                            app:tint="@color/text_secondary" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Shift"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/tvShift"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+                </LinearLayout>
+
+                <!-- Department row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <FrameLayout
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:background="@drawable/bg_icon_box"
+                        android:layout_marginEnd="10dp">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_building"
+                            app:tint="@color/text_secondary" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Department"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/tvDepartment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ── Action Buttons ── -->
+        <LinearLayout
+            android:id="@+id/layoutActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMarkLogin"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Mark Login"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.03"
+                app:cornerRadius="10dp"
+                app:backgroundTint="@color/teal_50"
+                android:textColor="@color/teal_800"
+                app:icon="@drawable/ic_login"
+                app:iconTint="@color/teal_800"
+                app:iconGravity="textStart"
+                app:iconPadding="6dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMarkLogout"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Mark Logout"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.03"
+                app:cornerRadius="10dp"
+                app:backgroundTint="@color/coral_50"
+                android:textColor="@color/coral_800"
+                app:icon="@drawable/ic_logout"
+                app:iconTint="@color/coral_800"
+                app:iconGravity="textStart"
+                app:iconPadding="6dp" />
+        </LinearLayout>
+
+        <!-- ── Status Bar ── -->
+        <LinearLayout
+            android:id="@+id/layoutStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            android:background="@drawable/bg_status_bar"
+            android:padding="14dp"
+            android:layout_marginBottom="16dp">
+
+            <View
+                android:id="@+id/statusDot"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:background="@drawable/bg_dot_active"
+                android:layout_marginEnd="10dp" />
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/teal_800" />
+        </LinearLayout>
+
+        <!-- ── Back Button ── -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBack"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Back"
+            android:textSize="13sp"
+            android:textColor="@color/text_secondary"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:cornerRadius="10dp"
+            app:strokeColor="@color/divider_color"
+            app:icon="@drawable/ic_back"
+            app:iconTint="@color/text_secondary"
+            app:iconGravity="textStart"
+            app:iconPadding="6dp" />
+
+    </LinearLayout>
+</ScrollView>

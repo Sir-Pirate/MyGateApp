@@ -1,4 +1,19 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="logout">Logout</string>
+    <string name="desc_shift_icon">Shift icon</string>
+    <string name="desc_department_icon">Department icon</string>
+    <string name="label_attendance_system">ATTENDANCE SYSTEM</string>
+    <string name="label_staff">Staff </string>
+    <string name="label_entry">Entry</string>
+    <string name="label_staff_phone">STAFF PHONE NUMBER</string>
+    <string name="label_country_code">+91</string>
+    <string name="hint_phone">10-digit number</string>
+    <string name="btn_search_staff">Search Staff</string>
+    <string name="label_active">Active</string>
+    <string name="label_shift">Shift</string>
+    <string name="label_department">Department</string>
+    <string name="btn_mark_login">Mark Login</string>
+    <string name="btn_mark_logout">Mark Logout</string>
+    <string name="btn_back">Back</string>
 </resources>
