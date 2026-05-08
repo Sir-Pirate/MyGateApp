@@ -11,7 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
-
+        <activity
+            android:name=".StaffDashboardActivity"
+            android:exported="false" />
         <!-- Login Screen (Launcher) -->
         <activity
             android:name=".MainActivity"
@@ -20,31 +22,34 @@
             android:theme="@style/Theme.MyApplication">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- Register Screen -->
-        <activity android:name=".RegisterActivity" android:exported="false" />
-
-        <!-- Home Screen -->
-        <activity android:name=".HomeActivity" android:exported="false" />
-
-        <!-- Visitor Approve Screen (M3 - Week 2) -->
+        </activity> <!-- Register Screen -->
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false" /> <!-- Home Screen -->
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false" /> <!-- Visitor Approve Screen (M3 - Week 2) -->
         <activity
             android:name=".VisitorApproveActivity"
-            android:label="Pre-Approve Visitor"
-            android:exported="false" />
-
-        <!-- Visitor Arrival Screen (M3 - Week 2) -->
+            android:exported="false"
+            android:label="Pre-Approve Visitor" /> <!-- Visitor Arrival Screen (M3 - Week 2) -->
         <activity
             android:name=".VisitorArrivalActivity"
-            android:label="Visitor Arrival"
+            android:exported="false"
+            android:label="Visitor Arrival" />
+        <activity
+            android:name=".VisitorAuthActivity"
             android:exported="false" />
-        <activity android:name=".VisitorAuthActivity" android:exported="false" />
-        <activity android:name=".DeliveryLogActivity" android:exported="false" />
-        <activity android:name=".DeliveryActivity"    android:exported="false" />
-        <activity android:name=".AlertsActivity"/>
+        <activity
+            android:name=".DeliveryLogActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DeliveryActivity"
+            android:exported="false" />
+        <activity android:name=".AlertsActivity" />
         <activity android:name=".AddStaffActivity" />
         <activity android:name=".StaffEntryActivity" />
         <activity android:name=".StaffHistoryActivity" />
@@ -54,17 +59,13 @@
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
-
             <intent-filter>
-                <action android:name=
-                    "com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
 
-
-        <!-- for visitor arrival alerts for residetn -->
+            <!-- for visitor arrival alerts for residetn -->
 
         </service>
-
     </application>
 
 </manifest>

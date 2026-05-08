@@ -37,6 +37,8 @@ class HomeActivity : AppCompatActivity() {
     private var tvWelcome: TextView? = null
     private var tvDateTime: TextView? = null
 
+    private var btnStaffDashboard: LinearLayout? = null
+
     private var btnLogout: MaterialButton? = null
 
     private val auth = FirebaseAuth.getInstance()
@@ -70,6 +72,7 @@ class HomeActivity : AppCompatActivity() {
         btnMyProfile = findViewById(R.id.btnMyProfile)
         btnParking = findViewById(R.id.btnParking)
         btnSOS = findViewById(R.id.btnSOS)
+        btnStaffDashboard = findViewById(R.id.btnStaffDashboard)
 
         btnLogout = findViewById(R.id.btnLogout)
     }
@@ -100,6 +103,7 @@ class HomeActivity : AppCompatActivity() {
                 btnVisitorAuth?.visibility = View.VISIBLE
 
                 btnDelivery?.visibility = View.GONE
+                btnStaffDashboard?.visibility = View.VISIBLE
                 btnDelivery?.isEnabled = false
                 btnDelivery?.setOnClickListener(null)
 
@@ -124,6 +128,7 @@ class HomeActivity : AppCompatActivity() {
                 btnMyProfile?.visibility = View.GONE
                 btnParking?.visibility = View.GONE
                 btnSOS?.visibility = View.GONE
+                btnStaffDashboard?.visibility = View.GONE
             }
 
             "admin" -> {
@@ -215,6 +220,19 @@ class HomeActivity : AppCompatActivity() {
             showSOSDialog()
         }
 
+        btnStaffDashboard?.setOnClickListener {
+
+            if (userRole == "resident") {
+
+                startActivity(
+                    Intent(this, StaffDashboardActivity::class.java)
+                )
+
+            } else {
+                showComingSoon("Staff Dashboard")
+            }
+        }
+
         btnLogout?.setOnClickListener {
             showLogoutDialog()
         }
@@ -241,6 +259,8 @@ class HomeActivity : AppCompatActivity() {
             .setNegativeButton("Cancel", null)
             .show()
     }
+
+
 
     private fun showSOSDialog() {
         AlertDialog.Builder(this)

@@ -2,91 +2,151 @@ package com.example.myapplication;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class StaffHistoryActivity extends AppCompatActivity {
 
-    private LinearLayout layoutLogs;
-    private TextView tvEmpty;
+    private RecyclerView recyclerViewHistory;
+
+    private TextView tvEmptyLogs;
+    private TextView tvStaffName;
+    private TextView tvStaffRole;
+
+    private StaffHistoryAdapter adapter;
+
+    private List<AttendanceLogModel> historyList =
+            new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_staff_history);
 
-        layoutLogs = findViewById(R.id.layoutLogs);
-        tvEmpty = findViewById(R.id.tvEmptyLogs);
+        // Bind Views
 
-        String staffId = getIntent().getStringExtra("staffId");
+        recyclerViewHistory =
+                findViewById(R.id.recyclerViewHistory);
+
+        tvEmptyLogs =
+                findViewById(R.id.tvEmptyLogs);
+
+        tvStaffName =
+                findViewById(R.id.tvStaffName);
+
+        tvStaffRole =
+                findViewById(R.id.tvStaffRole);
+
+        // RecyclerView Setup
+
+        recyclerViewHistory.setLayoutManager(
+                new LinearLayoutManager(this)
+        );
+
+        adapter = new StaffHistoryAdapter(historyList);
+
+        recyclerViewHistory.setAdapter(adapter);
+
+        // Get Staff ID
+
+        String staffId =
+                getIntent().getStringExtra("staffId");
 
         if (staffId == null) {
             finish();
             return;
         }
 
+        // Load Staff Info
+
+        loadStaffInfo(staffId);
+
+        // Load Attendance Logs
+
         loadLogs(staffId);
+    }
+
+    private void loadStaffInfo(String staffId) {
+
+        FirebaseFirestore.getInstance()
+                .collection("staff")
+                .document(staffId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+
+                    if (!documentSnapshot.exists()) return;
+
+                    tvStaffName.setText(
+                            documentSnapshot.getString("name")
+                    );
+
+                    tvStaffRole.setText(
+                            documentSnapshot.getString("role")
+                    );
+                });
     }
 
     private void loadLogs(String staffId) {
 
         StaffManager.getStaffLogs(
+
                 staffId,
 
                 logs -> {
 
+                    historyList.clear();
+
                     if (logs.isEmpty()) {
-                        tvEmpty.setVisibility(View.VISIBLE);
+
+                        tvEmptyLogs.setVisibility(View.VISIBLE);
+
+                        adapter.notifyDataSetChanged();
+
                         return;
                     }
 
-                    tvEmpty.setVisibility(View.GONE);
+                    tvEmptyLogs.setVisibility(View.GONE);
 
                     for (Map<String, Object> log : logs) {
 
-                        Long loginTime = (Long) log.get("loginTime");
-                        Long logoutTime = (Long) log.get("logoutTime");
-                        Long duration = (Long) log.get("durationMinutes");
-                        String status = (String) log.get("status");
+                        Long loginTime =
+                                (Long) log.get("loginTime");
 
-                        String loginText = formatTime(loginTime);
-                        String logoutText = logoutTime != null && logoutTime > 0
-                                ? formatTime(logoutTime)
-                                : "Still inside";
+                        Long logoutTime =
+                                (Long) log.get("logoutTime");
 
-                        TextView tv = new TextView(this);
+                        Long duration =
+                                (Long) log.get("durationMinutes");
 
-                        tv.setText(
-                                "Login: " + loginText +
-                                        "\nLogout: " + logoutText +
-                                        "\nDuration: " + (duration != null ? duration : 0) + " mins" +
-                                        "\nStatus: " + (status != null ? status : "ongoing")
-                        );
+                        AttendanceLogModel model =
+                                new AttendanceLogModel(
+                                        loginTime != null ? loginTime : 0,
+                                        logoutTime != null ? logoutTime : 0,
+                                        duration != null ? duration : 0
+                                );
 
-                        tv.setPadding(30, 30, 30, 30);
-
-                        layoutLogs.addView(tv);
+                        historyList.add(model);
                     }
+
+                    adapter.notifyDataSetChanged();
                 },
 
                 error -> {
-                    tvEmpty.setVisibility(View.VISIBLE);
-                    tvEmpty.setText(error);
+
+                    tvEmptyLogs.setVisibility(View.VISIBLE);
+
+                    tvEmptyLogs.setText(error);
                 }
         );
-    }
-
-    private String formatTime(Long time) {
-        if (time == null) return "-";
-        return new SimpleDateFormat("hh:mm a", Locale.getDefault())
-                .format(new Date(time));
     }
 }
