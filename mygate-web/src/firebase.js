@@ -3,7 +3,7 @@ import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCegIrF5g7cKS9ivdH0Dl9b2hKUn2msftA",
+  apiKey: "AIzaSyDs2YLhZtE0GOySBqiVMGvH9aq6zzWubOI",
   authDomain: "mygate-f5827.firebaseapp.com",
   projectId: "mygate-f5827",
   storageBucket: "mygate-f5827.firebasestorage.app",
