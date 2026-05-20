@@ -25,21 +25,19 @@ public class AlertsActivity extends AppCompatActivity {
 
         layoutAlerts = findViewById(R.id.layoutAlerts);
         tvEmpty = findViewById(R.id.tvEmptyAlerts);
-
     }
 
-    // ✅ FIXED: onResume must be OUTSIDE onCreate
     @Override
     protected void onResume() {
         super.onResume();
-        loadAlerts(); // reload every time screen opens
+        loadAlerts();
     }
 
     private void loadAlerts() {
 
         layoutAlerts.removeAllViews();
 
-        // Safety check
+        // Check login
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             finish();
             return;
@@ -53,50 +51,87 @@ public class AlertsActivity extends AppCompatActivity {
                 .collection("alerts")
                 .whereEqualTo("residentId", uid)
                 .orderBy("createdAt", Query.Direction.DESCENDING)
-                .get(com.google.firebase.firestore.Source.SERVER)
-                .addOnSuccessListener(querySnapshot -> {
+                .addSnapshotListener((querySnapshot, error) -> {
 
-                    if (querySnapshot.isEmpty()) {
+                    // Error
+                    if (error != null) {
+
                         tvEmpty.setVisibility(View.VISIBLE);
+
+                        tvEmpty.setText(
+                                "Failed to load alerts"
+                        );
+
                         return;
                     }
 
+                    // Empty
+                    if (querySnapshot == null ||
+                            querySnapshot.isEmpty()) {
+
+                        tvEmpty.setVisibility(View.VISIBLE);
+
+                        tvEmpty.setText(
+                                "No alerts available"
+                        );
+
+                        return;
+                    }
+
+                    // Data available
                     tvEmpty.setVisibility(View.GONE);
 
-                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                    layoutAlerts.removeAllViews();
 
-                        String msg = doc.getString("message");
+                    for (QueryDocumentSnapshot document : querySnapshot) {
 
-                        // Handle read/unread (supports old + new data)
-                        Boolean isRead = doc.getBoolean("read");
+                        String msg =
+                                document.getString("message");
+
+                        Boolean isRead =
+                                document.getBoolean("read");
+
                         if (isRead == null) {
-                            isRead = doc.getBoolean("isRead");
+                            isRead = false;
                         }
-                        if (isRead == null) isRead = false;
 
-                        TextView alertItem = new TextView(this);
+                        TextView alertItem =
+                                new TextView(AlertsActivity.this);
 
+                        // Unread alert
                         if (!isRead) {
-                            // Show unread UI
-                            alertItem.setTypeface(null, Typeface.BOLD);
-                            alertItem.setText("🔴 🔔 " + msg);
 
-                            // Mark as read (ONLY once here)
-                            doc.getReference().update("read", true);
+                            alertItem.setTypeface(
+                                    null,
+                                    Typeface.BOLD
+                            );
+
+                            alertItem.setText(
+                                    "🔴 🔔 " + msg
+                            );
+
+                            // Mark read
+                            document.getReference()
+                                    .update("read", true);
 
                         } else {
-                            alertItem.setText("🔔 " + msg);
+
+                            alertItem.setText(
+                                    "🔔 " + msg
+                            );
                         }
 
                         alertItem.setTextSize(18);
-                        alertItem.setPadding(30, 30, 30, 30);
+
+                        alertItem.setPadding(
+                                30,
+                                30,
+                                30,
+                                30
+                        );
 
                         layoutAlerts.addView(alertItem);
                     }
-                })
-                .addOnFailureListener(e -> {
-                    tvEmpty.setVisibility(View.VISIBLE);
-                    tvEmpty.setText("Failed to load alerts: " + e.getMessage());
                 });
     }
 }

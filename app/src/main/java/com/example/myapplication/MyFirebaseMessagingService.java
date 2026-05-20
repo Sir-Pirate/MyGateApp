@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -12,44 +13,73 @@ import com.google.firebase.messaging.RemoteMessage;
 public class MyFirebaseMessagingService
         extends FirebaseMessagingService {
 
+    private static final String CHANNEL_ID =
+            "smart_security_alerts";
+
+    // Called when token refreshes
     @Override
     public void onNewToken(String token) {
         super.onNewToken(token);
+
+        Log.d("FCM_TOKEN", token);
+
+        // Optional:
+        // Save updated token to Firestore here later
     }
 
+    // Called when notification received
     @Override
     public void onMessageReceived(
             RemoteMessage remoteMessage
     ) {
 
-        String title =
-                remoteMessage.getNotification().getTitle();
+        super.onMessageReceived(remoteMessage);
 
-        String body =
-                remoteMessage.getNotification().getBody();
+        String title = "Alert";
+        String body = "New Notification";
+
+        // Notification Payload
+        if (remoteMessage.getNotification() != null) {
+
+            if (remoteMessage.getNotification().getTitle() != null) {
+                title =
+                        remoteMessage.getNotification().getTitle();
+            }
+
+            if (remoteMessage.getNotification().getBody() != null) {
+                body =
+                        remoteMessage.getNotification().getBody();
+            }
+        }
 
         showNotification(title, body);
     }
 
+    // Show Local Notification
     private void showNotification(
             String title,
-            String body) {
-
-        String CHANNEL_ID = "visitor_alerts";
+            String body
+    ) {
 
         NotificationManager manager =
-                getSystemService(
-                        NotificationManager.class
-                );
+                (NotificationManager)
+                        getSystemService(
+                                NOTIFICATION_SERVICE
+                        );
 
+        // Android 8+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             NotificationChannel channel =
                     new NotificationChannel(
                             CHANNEL_ID,
-                            "Visitor Alerts",
+                            "Smart Security Alerts",
                             NotificationManager.IMPORTANCE_HIGH
                     );
+
+            channel.setDescription(
+                    "Notifications for visitors, deliveries and emergencies"
+            );
 
             manager.createNotificationChannel(channel);
         }
@@ -59,13 +89,19 @@ public class MyFirebaseMessagingService
                         this,
                         CHANNEL_ID
                 )
-                        .setContentTitle(title)
-                        .setContentText(body)
                         .setSmallIcon(
                                 android.R.drawable.ic_dialog_info
                         )
+                        .setContentTitle(title)
+                        .setContentText(body)
+                        .setPriority(
+                                NotificationCompat.PRIORITY_HIGH
+                        )
                         .setAutoCancel(true);
 
-        manager.notify(1, builder.build());
+        manager.notify(
+                (int) System.currentTimeMillis(),
+                builder.build()
+        );
     }
 }

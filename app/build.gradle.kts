@@ -40,6 +40,10 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        buildFeatures {
+            viewBinding = true
+        }
+
     }
 }
 
@@ -68,6 +72,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("com.google.firebase:firebase-database-ktx:21.0.0")
 
     testImplementation(libs.junit)
 
