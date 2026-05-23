@@ -1,13 +1,11 @@
 package com.example.myapplication
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.databinding.ActivityLockerBinding
 import com.google.firebase.firestore.FirebaseFirestore
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import kotlin.random.Random
 
 class LockerActivity : AppCompatActivity() {
@@ -19,70 +17,117 @@ class LockerActivity : AppCompatActivity() {
 
     private val firestore = FirebaseFirestore.getInstance()
 
+    // Resident details
+    private var residentId = ""
+    private var residentName = ""
+    private var flatNumber = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityLockerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Receive data from DeliveryActivity
+        // Receive courier name
         var courierName =
             intent.getStringExtra("courierName") ?: ""
 
-        var flatNumber =
-            intent.getStringExtra("flatNumber") ?: ""
-
-        // Autofill fields
         binding.etCourierName.setText(courierName)
-        binding.etFlatNumber.setText(flatNumber)
 
-        // =========================
-        // GENERATE LOCKER + OTP
-        // =========================
+        // =====================================
+        // GENERATE LOCKER + FIND RESIDENT
+        // =====================================
         binding.btnGenerate.setOnClickListener {
 
             courierName =
                 binding.etCourierName.text.toString().trim()
 
-            flatNumber =
-                binding.etFlatNumber.text.toString().trim()
+            val mobileNumber =
+                binding.etMobileNumber.text.toString().trim()
 
             // Validation
             if (
                 courierName.isEmpty() ||
-                flatNumber.isEmpty()
+                mobileNumber.isEmpty()
             ) {
 
                 Toast.makeText(
                     this,
-                    "Enter courier and flat number",
+                    "Enter courier and mobile number",
                     Toast.LENGTH_SHORT
                 ).show()
 
                 return@setOnClickListener
             }
 
-            // Generate values
-            lockerId = generateLockerId()
-            otp = generateOtp()
+            // =====================================
+            // FIND RESIDENT USING MOBILE NUMBER
+            // =====================================
+            firestore.collection("users")
+                .whereEqualTo("phone", mobileNumber)
+                .get()
+                .addOnSuccessListener { result ->
 
-            // Show values
-            binding.etLockerId.setText(lockerId)
-            binding.etOtp.setText(otp)
+                    if (!result.isEmpty) {
 
-            // Enable Store button
-            binding.btnStore.isEnabled = true
+                        val userDoc =
+                            result.documents[0]
 
-            Toast.makeText(
-                this,
-                "Locker & OTP Generated",
-                Toast.LENGTH_SHORT
-            ).show()
+                        residentId =
+                            userDoc.id
+
+                        residentName =
+                            userDoc.getString("name") ?: ""
+
+                        flatNumber =
+                            userDoc.getString("flatNo") ?: ""
+
+                        // Show resident details
+                        binding.tvResidentInfo.visibility =
+                            View.VISIBLE
+
+                        binding.tvResidentInfo.text =
+                            "Resident: $residentName\nFlat: $flatNumber"
+
+                        // Generate locker values
+                        lockerId = generateLockerId()
+                        otp = generateOtp()
+
+                        binding.etLockerId.setText(lockerId)
+                        binding.etOtp.setText(otp)
+
+                        // Enable Store button
+                        binding.btnStore.isEnabled = true
+
+                        Toast.makeText(
+                            this,
+                            "Locker & OTP Generated",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                    } else {
+
+                        Toast.makeText(
+                            this,
+                            "Resident not found",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+
+                .addOnFailureListener { e ->
+
+                    Toast.makeText(
+                        this,
+                        "Error: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
         }
 
-        // =========================
+        // =====================================
         // STORE PACKAGE
-        // =========================
+        // =====================================
         binding.btnStore.setOnClickListener {
 
             // Safety check
@@ -100,71 +145,88 @@ class LockerActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Locker Data
+            val courierName =
+                binding.etCourierName.text.toString().trim()
+
+            // =====================================
+            // LOCKER DATA
+            // =====================================
             val lockerData = hashMapOf(
+
                 "courierName" to courierName,
+
+                "residentId" to residentId,
+
+                "residentName" to residentName,
+
                 "flatNumber" to flatNumber,
+
                 "lockerId" to lockerId,
+
                 "otp" to otp,
+
                 "status" to "stored",
-                "storedAt" to System.currentTimeMillis()
+
+                "storedAt" to System.currentTimeMillis(),
+
+                // 6 hour expiry
+                "expiresAt" to (
+                        System.currentTimeMillis() +
+                                (6 * 60 * 60 * 1000)
+                        )
             )
 
-            // Save Locker
+            // =====================================
+            // SAVE LOCKER
+            // =====================================
             firestore.collection("lockers")
                 .add(lockerData)
                 .addOnSuccessListener {
 
-                    // =========================
-                    // FIND RESIDENT BY FLAT
-                    // =========================
-                    firestore.collection("users")
-                        .whereEqualTo("flatNo", flatNumber)
-                        .get()
-                        .addOnSuccessListener { result ->
+                    // =====================================
+                    // CREATE ALERT
+                    // =====================================
+                    val alertData = hashMapOf(
 
-                            if (!result.isEmpty) {
+                        "title" to "📦 Delivery Stored",
 
-                                // Resident UID
-                                val residentId =
-                                    result.documents[0].id
+                        "message" to
+                                "Your package from $courierName " +
+                                "is stored in Locker $lockerId. " +
+                                "OTP: $otp",
 
-                                // =========================
-                                // CREATE ALERT
-                                // =========================
-                                val alertData = hashMapOf(
-                                    "title" to "📦 Delivery Stored",
-                                    "message" to
-                                            "Your package from $courierName " +
-                                            "is stored in Locker $lockerId. " +
-                                            "OTP: $otp",
+                        "flatNo" to flatNumber,
 
-                                    "flatNo" to flatNumber,
-                                    "residentId" to residentId,
-                                    "type" to "locker",
-                                    "read" to false,
-                                    "createdAt" to System.currentTimeMillis()
-                                )
+                        "residentId" to residentId,
 
-                                firestore.collection("alerts")
-                                    .add(alertData)
-                            }
+                        "type" to "locker",
 
-                            // Success UI
-                            binding.tvStatus.text =
-                                "✅ Package Stored\n\n" +
-                                        "Locker: $lockerId\n" +
-                                        "OTP: $otp"
+                        "read" to false,
 
-                            Toast.makeText(
-                                this@LockerActivity,
-                                "Package Stored Successfully",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                        "createdAt" to System.currentTimeMillis()
+                    )
 
-                            // Disable button after storing
-                            binding.btnStore.isEnabled = false
-                        }
+                    firestore.collection("alerts")
+                        .add(alertData)
+
+                    // =====================================
+                    // SUCCESS UI
+                    // =====================================
+                    binding.tvStatus.text =
+                        "✅ Package Stored\n\n" +
+                                "Resident: $residentName\n" +
+                                "Flat: $flatNumber\n" +
+                                "Locker: $lockerId\n" +
+                                "OTP: $otp"
+
+                    Toast.makeText(
+                        this@LockerActivity,
+                        "Package Stored Successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    // Disable after storing
+                    binding.btnStore.isEnabled = false
                 }
 
                 .addOnFailureListener { e ->
@@ -177,17 +239,17 @@ class LockerActivity : AppCompatActivity() {
                 }
         }
 
-        // =========================
+        // =====================================
         // BACK BUTTON
-        // =========================
+        // =====================================
         binding.btnBack.setOnClickListener {
             finish()
         }
     }
 
-    // =========================
+    // =====================================
     // GENERATE LOCKER ID
-    // =========================
+    // =====================================
     private fun generateLockerId(): String {
 
         val number =
@@ -196,24 +258,13 @@ class LockerActivity : AppCompatActivity() {
         return "L-$number"
     }
 
-    // =========================
+    // =====================================
     // GENERATE OTP
-    // =========================
+    // =====================================
     private fun generateOtp(): String {
 
         return Random
             .nextInt(1000, 9999)
             .toString()
-    }
-
-    // =========================
-    // FORMAT TIME
-    // =========================
-    private fun getCurrentTime(): String {
-
-        return SimpleDateFormat(
-            "dd MMM yyyy, hh:mm a",
-            Locale.getDefault()
-        ).format(Date())
     }
 }

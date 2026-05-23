@@ -43,20 +43,33 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Flat Number -->
+        <!-- Mobile Number -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Flat Number"
+            android:hint="Resident Mobile Number"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etFlatNumber"
+                android:id="@+id/etMobileNumber"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:maxLength="10" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Resident Info -->
+        <TextView
+            android:id="@+id/tvResidentInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="#1565C0"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:visibility="gone" />
 
         <!-- Locker ID -->
         <com.google.android.material.textfield.TextInputLayout

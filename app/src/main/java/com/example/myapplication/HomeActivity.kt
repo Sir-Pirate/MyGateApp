@@ -1,30 +1,30 @@
 package com.example.myapplication
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import android.Manifest
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import android.util.Log
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import androidx.core.app.NotificationCompat
-import com.google.firebase.firestore.DocumentChange
 
 class HomeActivity : AppCompatActivity() {
 
@@ -45,6 +45,9 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var btnParking: LinearLayout
     private lateinit var btnSOS: LinearLayout
     private lateinit var btnStaffDashboard: LinearLayout
+
+    // NEW
+    private lateinit var btnLockerStatus: LinearLayout
 
     private lateinit var btnLogout: MaterialButton
 
@@ -114,6 +117,10 @@ class HomeActivity : AppCompatActivity() {
         btnStaffDashboard =
             findViewById(R.id.btnStaffDashboard)
 
+        // NEW
+        btnLockerStatus =
+            findViewById(R.id.btnLockerStatus)
+
         btnLogout =
             findViewById(R.id.btnLogout)
     }
@@ -153,6 +160,9 @@ class HomeActivity : AppCompatActivity() {
 
                 btnVisitorAuth.visibility = View.VISIBLE
                 btnStaffDashboard.visibility = View.VISIBLE
+
+                // NEW
+                btnLockerStatus.visibility = View.VISIBLE
             }
 
             "guard" -> {
@@ -164,10 +174,15 @@ class HomeActivity : AppCompatActivity() {
                 btnParking.visibility = View.GONE
                 btnSOS.visibility = View.GONE
                 btnStaffDashboard.visibility = View.GONE
+
+                // NEW
+                btnLockerStatus.visibility = View.GONE
             }
 
             "admin" -> {
+
                 // Full access
+                btnLockerStatus.visibility = View.VISIBLE
             }
 
             else -> {
@@ -189,6 +204,7 @@ class HomeActivity : AppCompatActivity() {
         btnDelivery.visibility = View.GONE
         btnVisitorAuth.visibility = View.GONE
         btnGoToVisitorApprove.visibility = View.GONE
+        btnLockerStatus.visibility = View.GONE
     }
 
     // Save FCM Token
@@ -229,7 +245,8 @@ class HomeActivity : AppCompatActivity() {
 
                 for (change in snapshots.documentChanges) {
 
-                    if (change.type ==
+                    if (
+                        change.type ==
                         DocumentChange.Type.ADDED
                     ) {
 
@@ -263,7 +280,8 @@ class HomeActivity : AppCompatActivity() {
                 NotificationManager::class.java
             )
 
-        if (android.os.Build.VERSION.SDK_INT >=
+        if (
+            android.os.Build.VERSION.SDK_INT >=
             android.os.Build.VERSION_CODES.O
         ) {
 
@@ -293,7 +311,6 @@ class HomeActivity : AppCompatActivity() {
             builder.build()
         )
     }
-
 
     // Click Listeners
     private fun setupClickListeners() {
@@ -395,6 +412,17 @@ class HomeActivity : AppCompatActivity() {
             )
         }
 
+        // NEW LOCKER STATUS
+        btnLockerStatus.setOnClickListener {
+
+            startActivity(
+                Intent(
+                    this,
+                    ResidentLockerActivity::class.java
+                )
+            )
+        }
+
         btnResidents.setOnClickListener {
             showComingSoon("Residents Directory")
         }
@@ -491,9 +519,11 @@ class HomeActivity : AppCompatActivity() {
             .setNegativeButton("Cancel", null)
             .show()
     }
+
     private fun requestNotificationPermission() {
 
-        if (android.os.Build.VERSION.SDK_INT >=
+        if (
+            android.os.Build.VERSION.SDK_INT >=
             android.os.Build.VERSION_CODES.TIRAMISU
         ) {
 

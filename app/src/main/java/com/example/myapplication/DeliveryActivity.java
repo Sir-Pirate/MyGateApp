@@ -27,12 +27,19 @@ import java.util.Locale;
  * DeliveryActivity.java
  *
  * Resident + Guard Delivery Screen
+ *
+ * Supports:
+ * - Pending deliveries
+ * - Locker deliveries
+ * - Picked up deliveries
+ * - Expired locker deliveries
  */
 
 public class DeliveryActivity extends AppCompatActivity {
 
     // Layouts
-    private LinearLayout layoutDeliveryList, layoutDeliveryEmpty;
+    private LinearLayout layoutDeliveryList;
+    private LinearLayout layoutDeliveryEmpty;
 
     // Views
     private ProgressBar progressBar;
@@ -49,18 +56,25 @@ public class DeliveryActivity extends AppCompatActivity {
     private TextView tabPickedUp;
 
     // Data
-    private final List<DeliveryModel> allDeliveries = new ArrayList<>();
-    private final List<DeliveryModel> filteredDeliveries = new ArrayList<>();
+    private final List<DeliveryModel> allDeliveries =
+            new ArrayList<>();
+
+    private final List<DeliveryModel> filteredDeliveries =
+            new ArrayList<>();
 
     private String currentFilter = "all";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_delivery);
 
         bindViews();
+
         setTabListeners();
+
         setButtonListeners();
 
         loadDeliveries(null);
@@ -68,6 +82,7 @@ public class DeliveryActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+
         super.onResume();
 
         loadDeliveries(
@@ -83,22 +98,35 @@ public class DeliveryActivity extends AppCompatActivity {
 
     private void bindViews() {
 
-        layoutDeliveryList = findViewById(R.id.layoutDeliveryList);
-        layoutDeliveryEmpty = findViewById(R.id.layoutDeliveryEmpty);
+        layoutDeliveryList =
+                findViewById(R.id.layoutDeliveryList);
 
-        progressBar = findViewById(R.id.progressBarDelivery);
+        layoutDeliveryEmpty =
+                findViewById(R.id.layoutDeliveryEmpty);
 
-        etFlatFilter = findViewById(R.id.etFlatFilter);
+        progressBar =
+                findViewById(R.id.progressBarDelivery);
 
-        btnFilterFlat = findViewById(R.id.btnFilterFlat);
+        etFlatFilter =
+                findViewById(R.id.etFlatFilter);
 
-        // NEW BUTTONS
-        btnStoreLocker = findViewById(R.id.btnStoreLocker);
-        btnBackHome = findViewById(R.id.btnBackHome);
+        btnFilterFlat =
+                findViewById(R.id.btnFilterFlat);
 
-        tabAllDeliveries = findViewById(R.id.tabAllDeliveries);
-        tabPendingDeliveries = findViewById(R.id.tabPendingDeliveries);
-        tabPickedUp = findViewById(R.id.tabPickedUp);
+        btnStoreLocker =
+                findViewById(R.id.btnStoreLocker);
+
+        btnBackHome =
+                findViewById(R.id.btnBackHome);
+
+        tabAllDeliveries =
+                findViewById(R.id.tabAllDeliveries);
+
+        tabPendingDeliveries =
+                findViewById(R.id.tabPendingDeliveries);
+
+        tabPickedUp =
+                findViewById(R.id.tabPickedUp);
     }
 
     // ─────────────────────────────────────────────────────────
@@ -110,9 +138,12 @@ public class DeliveryActivity extends AppCompatActivity {
         // Filter by Flat
         btnFilterFlat.setOnClickListener(v -> {
 
-            String flat = etFlatFilter.getText() != null
-                    ? etFlatFilter.getText().toString().trim()
-                    : "";
+            String flat =
+                    etFlatFilter.getText() != null
+                            ? etFlatFilter.getText()
+                            .toString()
+                            .trim()
+                            : "";
 
             if (!flat.isEmpty()) {
 
@@ -131,10 +162,11 @@ public class DeliveryActivity extends AppCompatActivity {
         // Store in Locker
         btnStoreLocker.setOnClickListener(v -> {
 
-            Intent intent = new Intent(
-                    DeliveryActivity.this,
-                    LockerActivity.class
-            );
+            Intent intent =
+                    new Intent(
+                            DeliveryActivity.this,
+                            LockerActivity.class
+                    );
 
             startActivity(intent);
         });
@@ -142,10 +174,11 @@ public class DeliveryActivity extends AppCompatActivity {
         // Back Home
         btnBackHome.setOnClickListener(v -> {
 
-            Intent intent = new Intent(
-                    DeliveryActivity.this,
-                    HomeActivity.class
-            );
+            Intent intent =
+                    new Intent(
+                            DeliveryActivity.this,
+                            HomeActivity.class
+                    );
 
             startActivity(intent);
 
@@ -190,19 +223,30 @@ public class DeliveryActivity extends AppCompatActivity {
     private void setActiveTab(TextView active) {
 
         TextView[] tabs = {
+
                 tabAllDeliveries,
+
                 tabPendingDeliveries,
+
                 tabPickedUp
         };
 
         for (TextView tab : tabs) {
 
-            tab.setTextColor(Color.parseColor("#E65100"));
-            tab.setBackgroundResource(R.drawable.tab_delivery_unselected);
+            tab.setTextColor(
+                    Color.parseColor("#E65100")
+            );
+
+            tab.setBackgroundResource(
+                    R.drawable.tab_delivery_unselected
+            );
         }
 
         active.setTextColor(Color.WHITE);
-        active.setBackgroundResource(R.drawable.tab_delivery_selected);
+
+        active.setBackgroundResource(
+                R.drawable.tab_delivery_selected
+        );
     }
 
     // ─────────────────────────────────────────────────────────
@@ -220,9 +264,11 @@ public class DeliveryActivity extends AppCompatActivity {
                 deliveries -> {
 
                     allDeliveries.clear();
+
                     allDeliveries.addAll(deliveries);
 
                     filteredDeliveries.clear();
+
                     filteredDeliveries.addAll(deliveries);
 
                     showLoading(false);
@@ -254,9 +300,11 @@ public class DeliveryActivity extends AppCompatActivity {
                 deliveries -> {
 
                     allDeliveries.clear();
+
                     allDeliveries.addAll(deliveries);
 
                     filteredDeliveries.clear();
+
                     filteredDeliveries.addAll(deliveries);
 
                     showLoading(false);
@@ -289,23 +337,33 @@ public class DeliveryActivity extends AppCompatActivity {
         if (deliveries.isEmpty()) {
 
             layoutDeliveryEmpty.setVisibility(View.VISIBLE);
+
             layoutDeliveryList.setVisibility(View.GONE);
 
             return;
         }
 
         layoutDeliveryEmpty.setVisibility(View.GONE);
+
         layoutDeliveryList.setVisibility(View.VISIBLE);
 
-        LayoutInflater inflater = LayoutInflater.from(this);
+        LayoutInflater inflater =
+                LayoutInflater.from(this);
 
         for (DeliveryModel delivery : deliveries) {
 
             View card = inflater.inflate(
+
                     R.layout.item_delivery_card,
+
                     layoutDeliveryList,
+
                     false
             );
+
+            // ─────────────────────────────
+            // Views
+            // ─────────────────────────────
 
             TextView tvCourierName =
                     card.findViewById(R.id.tvCourierName);
@@ -322,57 +380,221 @@ public class DeliveryActivity extends AppCompatActivity {
             TextView tvDeliveryTime =
                     card.findViewById(R.id.tvDeliveryTime);
 
+            TextView tvLockerId =
+                    card.findViewById(R.id.tvLockerId);
+
+            TextView tvLockerOtp =
+                    card.findViewById(R.id.tvLockerOtp);
+
+            TextView tvLockerExpiry =
+                    card.findViewById(R.id.tvLockerExpiry);
+
+            LinearLayout layoutLockerInfo =
+                    card.findViewById(R.id.layoutLockerInfo);
+
+            CardView cardStatus =
+                    card.findViewById(R.id.cardStatus);
+
             MaterialButton btnConfirmPickup =
                     card.findViewById(R.id.btnConfirmPickup);
 
-            tvCourierName.setText(delivery.getCourierName());
+            // ─────────────────────────────
+            // Basic Info
+            // ─────────────────────────────
 
-            tvCourierPhone.setText(delivery.getCourierPhone());
+            tvCourierName.setText(
+                    delivery.getCourierName()
+            );
+
+            tvCourierPhone.setText(
+                    delivery.getCourierPhone()
+            );
 
             tvDeliveryFlat.setText(
                     "Flat " + delivery.getFlatNumber()
             );
 
             tvDeliveryTime.setText(
-                    "Logged at " + formatTime(delivery.getLoggedAt())
+                    "Logged at " +
+                            formatTime(
+                                    delivery.getLoggedAt()
+                            )
             );
 
+            // ─────────────────────────────
             // PICKED UP
+            // ─────────────────────────────
+
             if (delivery.isPickedUp()) {
 
-                tvDeliveryStatus.setText("Picked Up ✓");
+                tvDeliveryStatus.setText(
+                        "Picked Up ✓"
+                );
 
                 tvDeliveryStatus.setTextColor(
                         Color.parseColor("#2E7D32")
                 );
 
-                ((CardView) tvDeliveryStatus.getParent())
-                        .setCardBackgroundColor(
-                                Color.parseColor("#E8F5E9")
-                        );
+                cardStatus.setCardBackgroundColor(
+                        Color.parseColor("#E8F5E9")
+                );
 
-                btnConfirmPickup.setVisibility(View.GONE);
+                btnConfirmPickup.setVisibility(
+                        View.GONE
+                );
 
+                layoutLockerInfo.setVisibility(
+                        View.GONE
+                );
             }
 
-            // PENDING
+            // ─────────────────────────────
+            // LOCKER DELIVERY
+            // ─────────────────────────────
+
+            else if (delivery.isLockerDelivery()) {
+
+                tvDeliveryStatus.setText(
+                        "Locker Stored 🔐"
+                );
+
+                tvDeliveryStatus.setTextColor(
+                        Color.parseColor("#1565C0")
+                );
+
+                cardStatus.setCardBackgroundColor(
+                        Color.parseColor("#E3F2FD")
+                );
+
+                // Show Locker Info
+                layoutLockerInfo.setVisibility(
+                        View.VISIBLE
+                );
+
+                tvLockerId.setText(
+                        "Locker: " +
+                                delivery.getLockerId()
+                );
+
+                tvLockerOtp.setText(
+                        "OTP: " +
+                                delivery.getLockerOtp()
+                );
+
+                // Remaining Time
+                long remaining =
+                        delivery.getLockerExpiresAt()
+                                - System.currentTimeMillis();
+
+                long hours =
+                        remaining / (1000 * 60 * 60);
+
+                if (remaining > 0) {
+
+                    tvLockerExpiry.setText(
+                            "Expires in " +
+                                    hours +
+                                    " hrs"
+                    );
+
+                } else {
+
+                    tvLockerExpiry.setText(
+                            "Locker Expired"
+                    );
+                }
+
+                btnConfirmPickup.setVisibility(
+                        View.VISIBLE
+                );
+
+                btnConfirmPickup.setText(
+                        "Confirm Pickup"
+                );
+
+                btnConfirmPickup.setOnClickListener(v ->
+                        confirmPickup(
+                                delivery,
+                                btnConfirmPickup
+                        )
+                );
+            }
+
+            // ─────────────────────────────
+            // EXPIRED
+            // ─────────────────────────────
+
+            else if (delivery.isExpired()) {
+
+                tvDeliveryStatus.setText(
+                        "Expired ⌛"
+                );
+
+                tvDeliveryStatus.setTextColor(
+                        Color.parseColor("#C62828")
+                );
+
+                cardStatus.setCardBackgroundColor(
+                        Color.parseColor("#FFEBEE")
+                );
+
+                layoutLockerInfo.setVisibility(
+                        View.VISIBLE
+                );
+
+                tvLockerId.setText(
+                        "Locker: " +
+                                delivery.getLockerId()
+                );
+
+                tvLockerOtp.setText(
+                        "OTP Expired"
+                );
+
+                tvLockerExpiry.setText(
+                        "Resident did not collect in time"
+                );
+
+                btnConfirmPickup.setVisibility(
+                        View.GONE
+                );
+            }
+
+            // ─────────────────────────────
+            // NORMAL PENDING
+            // ─────────────────────────────
+
             else {
 
-                tvDeliveryStatus.setText("Pending");
+                tvDeliveryStatus.setText(
+                        "Pending"
+                );
 
                 tvDeliveryStatus.setTextColor(
                         Color.parseColor("#E65100")
                 );
 
-                ((CardView) tvDeliveryStatus.getParent())
-                        .setCardBackgroundColor(
-                                Color.parseColor("#FFF3E0")
-                        );
+                cardStatus.setCardBackgroundColor(
+                        Color.parseColor("#FFF3E0")
+                );
 
-                btnConfirmPickup.setVisibility(View.VISIBLE);
+                layoutLockerInfo.setVisibility(
+                        View.GONE
+                );
+
+                btnConfirmPickup.setVisibility(
+                        View.VISIBLE
+                );
+
+                btnConfirmPickup.setText(
+                        "Confirm Pickup"
+                );
 
                 btnConfirmPickup.setOnClickListener(v ->
-                        confirmPickup(delivery, btnConfirmPickup)
+                        confirmPickup(
+                                delivery,
+                                btnConfirmPickup
+                        )
                 );
             }
 
@@ -385,7 +607,9 @@ public class DeliveryActivity extends AppCompatActivity {
     // ─────────────────────────────────────────────────────────
 
     private void confirmPickup(
+
             DeliveryModel delivery,
+
             MaterialButton btn
     ) {
 
@@ -400,13 +624,18 @@ public class DeliveryActivity extends AppCompatActivity {
                 () -> {
 
                     Toast.makeText(
+
                             this,
+
                             "✓ Pickup confirmed for Flat "
                                     + delivery.getFlatNumber(),
+
                             Toast.LENGTH_SHORT
+
                     ).show();
 
                     loadDeliveries(
+
                             currentFilter.equals("all")
                                     ? null
                                     : currentFilter
@@ -420,9 +649,13 @@ public class DeliveryActivity extends AppCompatActivity {
                     btn.setText("Confirm Pickup");
 
                     Toast.makeText(
+
                             this,
+
                             "Error: " + err,
+
                             Toast.LENGTH_SHORT
+
                     ).show();
                 }
         );
@@ -435,19 +668,26 @@ public class DeliveryActivity extends AppCompatActivity {
     private void showLoading(boolean show) {
 
         progressBar.setVisibility(
-                show ? View.VISIBLE : View.GONE
+                show
+                        ? View.VISIBLE
+                        : View.GONE
         );
 
         layoutDeliveryList.setVisibility(
-                show ? View.GONE : View.VISIBLE
+                show
+                        ? View.GONE
+                        : View.VISIBLE
         );
     }
 
     private String formatTime(long millis) {
 
         return new SimpleDateFormat(
+
                 "hh:mm a, dd MMM",
+
                 Locale.getDefault()
+
         ).format(new Date(millis));
     }
 }
