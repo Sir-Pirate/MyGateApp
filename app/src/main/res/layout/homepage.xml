@@ -1,101 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F2F5">
+    android:background="@color/brand_primary"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="60dp"
+        android:paddingBottom="40dp">
 
-        <!-- TOP HEADER -->
+        <!-- HEADER (matches login: title + tagline on brand_primary) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="@color/text_on_dark"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Welcome back!"
+            android:textColor="@color/text_on_dark_dim"
+            android:textSize="13sp" />
+
+        <!-- Status pill row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#1A237E"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:paddingTop="40dp"
-            android:paddingBottom="28dp">
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <TextView
+            <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MyGate"
-                android:textColor="#FFFFFF"
-                android:textSize="28sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvWelcome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Welcome back!"
-                android:textColor="#C5CAE9"
-                android:textSize="14sp"
-                android:layout_marginTop="2dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="20dp"
-                    app:cardBackgroundColor="#2E7D32">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="● Gate Open"
-                        android:textColor="#FFFFFF"
-                        android:textSize="12sp"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp" />
-
-                </androidx.cardview.widget.CardView>
+                app:cardBackgroundColor="@color/status_green"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp">
 
                 <TextView
-                    android:id="@+id/tvDateTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mon, 14 Apr"
-                    android:textColor="#9FA8DA"
-                    android:textSize="12sp"
-                    android:layout_marginStart="12dp" />
+                    android:paddingStart="12dp"
+                    android:paddingTop="4dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="4dp"
+                    android:text="● Gate Open"
+                    android:textColor="@color/text_on_dark"
+                    android:textSize="12sp" />
+            </androidx.cardview.widget.CardView>
 
-            </LinearLayout>
-
+            <TextView
+                android:id="@+id/tvDateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Mon, 14 Apr"
+                android:textColor="@color/text_on_dark_dim"
+                android:textSize="12sp" />
         </LinearLayout>
 
-        <!-- QUICK STATS -->
+        <!-- QUICK STATS (outlined cards on dark bg, matching login's input look) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
+            android:layout_marginTop="28dp"
+            android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginEnd="6dp"
-                app:cardCornerRadius="12dp">
+                android:layout_weight="1"
+                app:cardBackgroundColor="@color/brand_primary_dark"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:gravity="center"
+                    android:orientation="vertical"
                     android:padding="14dp">
 
                     <TextView
@@ -103,32 +101,36 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
+                        android:textColor="@color/text_on_dark"
                         android:textSize="22sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Visitors Today"
+                        android:text="@string/stat_visitors"
+                        android:textColor="@color/text_on_dark_dim"
                         android:textSize="11sp" />
-
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="6dp"
                 android:layout_marginEnd="6dp"
-                app:cardCornerRadius="12dp">
+                android:layout_weight="1"
+                app:cardBackgroundColor="@color/brand_primary_dark"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:gravity="center"
+                    android:orientation="vertical"
                     android:padding="14dp">
 
                     <TextView
@@ -136,31 +138,35 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
+                        android:textColor="@color/text_on_dark"
                         android:textSize="22sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pending Deliveries"
+                        android:text="@string/stat_deliveries"
+                        android:textColor="@color/text_on_dark_dim"
                         android:textSize="11sp" />
-
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="6dp"
-                app:cardCornerRadius="12dp">
+                android:layout_weight="1"
+                app:cardBackgroundColor="@color/brand_primary_dark"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:gravity="center"
+                    android:orientation="vertical"
                     android:padding="14dp">
 
                     <TextView
@@ -168,40 +174,41 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
+                        android:textColor="@color/status_error"
                         android:textSize="22sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Active Alerts"
+                        android:text="@string/stat_alerts"
+                        android:textColor="@color/text_on_dark_dim"
                         android:textSize="11sp" />
-
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
-
         </LinearLayout>
 
-        <!-- VISITOR SECTION -->
+        <!-- VISITOR PRIMARY ACTIONS (mirror login's primary/secondary button pair) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="100dp"
-                android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                app:cardCornerRadius="14dp"
-                app:cardBackgroundColor="#1A237E">
+                android:layout_weight="1"
+                app:cardBackgroundColor="@color/brand_primary_dark"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:id="@+id/btnGoToVisitorApprove"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -214,26 +221,30 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
                         android:text="Pre-Approve"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
-
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="100dp"
-                android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                app:cardCornerRadius="14dp"
-                app:cardBackgroundColor="#1B5E20">
+                android:layout_weight="1"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:id="@+id/btnGoToVisitorArrival"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -246,276 +257,441 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
                         android:text="Arrival"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
-
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
-
         </LinearLayout>
 
-        <!-- QUICK ACCESS -->
+        <!-- SECTION DIVIDER LABEL -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="12dp"
+            android:text="Quick Access"
+            android:textColor="@color/text_on_dark_dim"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08" />
+
+        <!-- QUICK ACCESS GRID (outlined tiles on dark bg) -->
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="3"
-            android:padding="16dp">
+            android:columnCount="3">
 
             <!-- Visitor Auth -->
-            <LinearLayout
-                android:id="@+id/btnVisitorAuth"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="90dp"
                 android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@color/brand_primary_dark"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1dp">
 
-                <TextView
-                    android:text="👤"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:id="@+id/btnVisitorAuth"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:text="Visitor Auth"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="👤"
+                        android:textSize="24sp" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Visitor Auth"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Delivery -->
-            <LinearLayout
-                android:id="@+id/btnDelivery"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="90dp"
                 android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@color/brand_primary_dark"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1dp">
 
-                <TextView
-                    android:text="📦"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:id="@+id/btnDelivery"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:text="Delivery"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🚚"
+                        android:textSize="24sp" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Delivery"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Staff -->
-            <LinearLayout
-                android:id="@+id/btnStaff"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="90dp"
                 android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@color/brand_primary_dark"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1dp">
 
-                <TextView
-                    android:text="👷"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:id="@+id/btnStaff"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:text="Staff"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="👷"
+                        android:textSize="24sp" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Staff"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Alerts -->
-            <LinearLayout
-                android:id="@+id/btnAlerts"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="90dp"
                 android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@color/brand_primary_dark"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1dp">
 
-                <TextView
-                    android:text="🚨"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:id="@+id/btnAlerts"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:text="Alerts"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🚨"
+                        android:textSize="24sp" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Alerts"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Residents -->
-            <LinearLayout
-                android:id="@+id/btnResidents"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="90dp"
                 android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@color/brand_primary_dark"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1dp">
 
-                <TextView
-                    android:text="🏘️"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:id="@+id/btnResidents"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:text="Residents"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🏘️"
+                        android:textSize="24sp" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Residents"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Notices -->
-            <LinearLayout
-                android:id="@+id/btnNotices"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="90dp"
                 android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@color/brand_primary_dark"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1dp">
 
-                <TextView
-                    android:text="📋"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:id="@+id/btnNotices"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:text="Notices"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📋"
+                        android:textSize="24sp" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Notices"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- My Profile -->
-            <LinearLayout
-                android:id="@+id/btnMyProfile"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="90dp"
                 android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@color/brand_primary_dark"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1dp">
 
-                <TextView
-                    android:text="⚙️"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:id="@+id/btnMyProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:text="My Profile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚙️"
+                        android:textSize="24sp" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="My Profile"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Parking -->
-            <LinearLayout
-                android:id="@+id/btnParking"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="90dp"
                 android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@color/brand_primary_dark"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1dp">
 
-                <TextView
-                    android:text="🚗"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:id="@+id/btnParking"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:text="Parking"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🚗"
+                        android:textSize="24sp" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Parking"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-            <!-- SOS -->
-            <LinearLayout
-                android:id="@+id/btnSOS"
+            <!-- SOS (kept red for emphasis) -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="90dp"
                 android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@color/status_error"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
 
-                <TextView
-                    android:text="🆘"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:id="@+id/btnSOS"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:text="SOS"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🆘"
+                        android:textSize="24sp" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="SOS"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Staff Dashboard -->
-            <LinearLayout
-                android:id="@+id/btnStaffDashboard"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="90dp"
                 android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@color/brand_primary_dark"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1dp">
 
-                <TextView
-                    android:text="📊"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:id="@+id/btnStaffDashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:text="Staff Dashboard"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📊"
+                        android:textSize="24sp" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Staff Dashboard"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-            <!-- Locker -->
-            <LinearLayout
-                android:id="@+id/btnLockerStatus"
+            <!-- My Locker -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="90dp"
                 android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@color/brand_primary_dark"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1dp">
 
-                <TextView
-                    android:text="📦"
-                    android:textSize="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:id="@+id/btnLockerStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:text="My Locker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🔒"
+                        android:textSize="24sp" />
 
-            </LinearLayout>
-
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="My Locker"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
         </GridLayout>
 
-        <!-- LOGOUT -->
+        <!-- LOGOUT (matches login's outlined secondary button) -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogout"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_margin="16dp"
-            android:text="Logout"
-            app:backgroundTint="#C62828" />
+            android:layout_height="48dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/logout"
+            android:textColor="@color/status_error"
+            android:textSize="14sp"
+            app:cornerRadius="12dp"
+            app:strokeColor="@color/status_error" />
 
     </LinearLayout>
-
 </ScrollView>

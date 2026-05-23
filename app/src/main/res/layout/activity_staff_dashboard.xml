@@ -1,199 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="@color/brand_primary"
+    android:orientation="vertical">
 
-    <!-- HEADER -->
-
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- HEADER (matches login: title + tagline on brand_primary) -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Staff Dashboard"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#212121"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="12dp"/>
+        android:orientation="vertical"
+        android:paddingStart="28dp"
+        android:paddingEnd="28dp"
+        android:paddingTop="60dp"
+        android:paddingBottom="24dp">
 
-    <!-- ANALYTICS ROW 1 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📊  Staff Dashboard"
+            android:textColor="@color/text_on_dark"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Attendance overview for today"
+            android:textColor="@color/text_on_dark_dim"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- STATS ROW 1 (outlined cards on dark bg, mirroring login's input fields) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp">
-
-        <!-- TOTAL STAFF -->
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="8dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="90dp"
-            android:layout_weight="1"
             android:layout_margin="4dp"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="3dp">
+            android:layout_weight="1"
+            app:cardBackgroundColor="@color/brand_primary_dark"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/brand_primary_light"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tvTotalStaff"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
+                    android:textColor="@color/text_on_dark"
                     android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="#1A237E"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Total Staff"
-                    android:textSize="12sp"
-                    android:textColor="#616161"/>
-
+                    android:layout_marginTop="2dp"
+                    android:text="@string/label_total_staff"
+                    android:textColor="@color/text_on_dark_dim"
+                    android:textSize="12sp" />
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
-
-        <!-- INSIDE NOW -->
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="90dp"
-            android:layout_weight="1"
             android:layout_margin="4dp"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="3dp">
+            android:layout_weight="1"
+            app:cardBackgroundColor="@color/brand_primary_dark"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/brand_primary_light"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tvInsideNow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
+                    android:textColor="@color/status_green"
                     android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="#2E7D32"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Inside Now"
-                    android:textSize="12sp"
-                    android:textColor="#616161"/>
-
+                    android:layout_marginTop="2dp"
+                    android:text="@string/label_inside_now"
+                    android:textColor="@color/text_on_dark_dim"
+                    android:textSize="12sp" />
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
-
     </LinearLayout>
 
-    <!-- ANALYTICS ROW 2 -->
-
+    <!-- STATS ROW 2 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingBottom="12dp">
-
-        <!-- WORKED TODAY -->
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="20dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="90dp"
-            android:layout_weight="1"
             android:layout_margin="4dp"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="3dp">
+            android:layout_weight="1"
+            app:cardBackgroundColor="@color/brand_primary_dark"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/brand_primary_light"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tvWorkedToday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0h"
+                    android:textColor="@color/text_on_dark"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="#E65100"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Worked Today"
-                    android:textSize="12sp"
-                    android:textColor="#616161"/>
-
+                    android:layout_marginTop="2dp"
+                    android:text="@string/label_worked_today"
+                    android:textColor="@color/text_on_dark_dim"
+                    android:textSize="12sp" />
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
-
-        <!-- PRESENT TODAY -->
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="90dp"
-            android:layout_weight="1"
             android:layout_margin="4dp"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="3dp">
+            android:layout_weight="1"
+            app:cardBackgroundColor="@color/brand_primary_dark"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/brand_primary_light"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tvPresentToday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
+                    android:textColor="@color/text_on_dark"
                     android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="#1565C0"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Present Today"
-                    android:textSize="12sp"
-                    android:textColor="#616161"/>
-
+                    android:layout_marginTop="2dp"
+                    android:text="@string/label_present_today"
+                    android:textColor="@color/text_on_dark_dim"
+                    android:textSize="12sp" />
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
-
     </LinearLayout>
 
-    <!-- STAFF LIST -->
+    <!-- SECTION LABEL -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginBottom="12dp"
+        android:letterSpacing="0.08"
+        android:text="Staff List"
+        android:textColor="@color/text_on_dark_dim"
+        android:textSize="13sp"
+        android:textStyle="bold" />
 
+    <!-- STAFF RECYCLERVIEW -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewStaff"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="20dp" />
 
 </LinearLayout>

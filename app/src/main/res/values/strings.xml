@@ -1,4 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">My Application</string>
+    <!-- App -->
+    <string name="app_name">MyGate</string>
     <string name="logout">Logout</string>
+
+    <!-- Auth -->
+    <string name="hint_email">Email address</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_full_name">Full Name</string>
+    <string name="hint_phone">Phone Number</string>
+    <string name="hint_flat_no">Flat Number (e.g. 4B)</string>
+    <string name="hint_tower">Tower / Block</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_register">Register</string>
+    <string name="btn_go_register">New user? Register here</string>
+    <string name="btn_go_login">Already have an account? Login</string>
+    <string name="label_select_role">Select Role</string>
+    <string name="content_desc_logo">App Logo</string>
+
+    <!-- Home -->
+    <string name="stat_visitors">Visitors Today</string>
+    <string name="stat_deliveries">Pending Deliveries</string>
+    <string name="stat_alerts">Active Alerts</string>
+
+    <!-- Visitor -->
+    <string name="title_pre_approve">Pre-Approve Visitor</string>
+    <string name="title_arrival">Visitor Arrival</string>
+    <string name="title_visitor_auth">Visitor Auth</string>
+    <string name="hint_visitor_name">Enter visitor\'s full name</string>
+    <string name="hint_visitor_phone">10-digit mobile number</string>
+    <string name="hint_visitor_note">e.g. Delivery, Family visit, Plumber…</string>
+    <string name="btn_approve_visitor">Pre-Approve Visitor</string>
+    <string name="btn_check_approval">Check Approval Status</string>
+    <string name="btn_mark_arrival">✓  Mark Visitor as Arrived</string>
+
+    <!-- Delivery -->
+    <string name="title_deliveries">Deliveries</string>
+    <string name="title_log_delivery">Log Delivery</string>
+    <string name="hint_courier_name">e.g. Swiggy, Amazon, BlueDart</string>
+    <string name="hint_courier_phone">10-digit mobile number</string>
+    <string name="hint_flat_filter">Your flat number (e.g. 4B)</string>
+    <string name="hint_flat_number">e.g. 4B, 12A, 202</string>
+    <string name="btn_log_delivery">Log Delivery</string>
+    <string name="btn_confirm_pickup">Confirm Pickup</string>
+    <string name="empty_deliveries">No deliveries found</string>
+
+    <!-- Locker -->
+    <string name="title_locker">Store Delivery in Locker</string>
+    <string name="hint_mobile_number">Resident Mobile Number</string>
+    <string name="hint_locker_id">Locker ID</string>
+    <string name="hint_otp">Pickup OTP</string>
+    <string name="btn_generate">Generate Locker &amp; OTP</string>
+    <string name="btn_store">Store Package</string>
+    <string name="btn_pickup_locker">Mark Picked Up</string>
+
+    <!-- Staff -->
+    <string name="title_staff_dashboard">Staff Dashboard</string>
+    <string name="label_total_staff">Total Staff</string>
+    <string name="label_inside_now">Inside Now</string>
+    <string name="label_worked_today">Worked Today</string>
+    <string name="label_present_today">Present Today</string>
+
+    <!-- Common -->
+    <string name="btn_back_home">Back to Home</string>
+    <string name="btn_back">Back</string>
+    <string name="btn_search">Search</string>
 </resources>

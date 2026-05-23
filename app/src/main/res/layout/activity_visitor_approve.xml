@@ -1,188 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FA"
+    android:background="@color/brand_primary"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingStart="28dp"
+        android:paddingEnd="28dp"
+        android:paddingTop="60dp"
+        android:paddingBottom="40dp">
 
-        <!-- Header Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
+        <!-- HEADER (matches login: icon + title + tagline directly on brand_primary) -->
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="12dp"
+            android:contentDescription="Pre-approve icon"
+            android:src="@android:drawable/ic_menu_send"
+            app:tint="@color/text_on_dark" />
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="#1A237E">
+            android:text="Pre-Approve Visitor"
+            android:textColor="@color/text_on_dark"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="24dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="32dp"
+            android:text="Fill in details to allow entry at the gate"
+            android:textColor="@color/text_on_dark_dim"
+            android:textSize="13sp" />
 
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="12dp"
-                    android:src="@android:drawable/ic_menu_send"
-                    app:tint="#FFFFFF" />
+        <!-- SECTION LABEL -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:letterSpacing="0.08"
+            android:text="VISITOR DETAILS"
+            android:textColor="@color/text_on_dark_dim"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Pre-Approve Visitor"
-                    android:textColor="#FFFFFF"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+        <!-- Visitor Name label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="Visitor Name *"
+            android:textColor="@color/text_on_dark"
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Fill in details to allow entry at the gate"
-                    android:textColor="#B0BEC5"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Form Card -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilVisitorName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="#FFFFFF">
+            app:boxStrokeColor="@color/brand_primary_light"
+            app:hintTextColor="@color/brand_primary_light">
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etVisitorName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:hint="Enter visitor's full name"
+                android:inputType="textPersonName"
+                android:textColor="@color/text_on_dark"
+                android:textColorHint="@color/text_on_dark_dim"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Visitor Details"
-                    android:textColor="#1A237E"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="16dp" />
+        <!-- Visitor Phone label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="Visitor Phone Number *"
+            android:textColor="@color/text_on_dark"
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
-                <!-- Visitor Name -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Visitor Name *"
-                    android:textColor="#37474F"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="6dp" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilVisitorPhone"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxStrokeColor="@color/brand_primary_light"
+            app:hintTextColor="@color/brand_primary_light"
+            app:startIconDrawable="@android:drawable/ic_menu_call"
+            app:startIconTint="@color/brand_primary_light">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilVisitorName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:boxCornerRadiusTopStart="10dp"
-                    app:boxCornerRadiusTopEnd="10dp"
-                    app:boxCornerRadiusBottomStart="10dp"
-                    app:boxCornerRadiusBottomEnd="10dp"
-                    app:boxStrokeColor="#1A237E"
-                    app:hintTextColor="#1A237E">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etVisitorPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="10-digit mobile number"
+                android:inputType="phone"
+                android:maxLength="10"
+                android:textColor="@color/text_on_dark"
+                android:textColorHint="@color/text_on_dark_dim"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etVisitorName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Enter visitor's full name"
-                        android:inputType="textPersonName"
-                        android:textColor="#212121"
-                        android:textSize="15sp" />
-                </com.google.android.material.textfield.TextInputLayout>
+        <!-- Purpose / Note label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="Purpose / Note (Optional)"
+            android:textColor="@color/text_on_dark"
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
-                <!-- Visitor Phone -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Visitor Phone Number *"
-                    android:textColor="#37474F"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="6dp" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilVisitorNote"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="28dp"
+            app:boxStrokeColor="@color/brand_primary_light"
+            app:hintTextColor="@color/brand_primary_light">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilVisitorPhone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:boxCornerRadiusTopStart="10dp"
-                    app:boxCornerRadiusTopEnd="10dp"
-                    app:boxCornerRadiusBottomStart="10dp"
-                    app:boxCornerRadiusBottomEnd="10dp"
-                    app:boxStrokeColor="#1A237E"
-                    app:hintTextColor="#1A237E"
-                    app:startIconDrawable="@android:drawable/ic_menu_call"
-                    app:startIconTint="#1A237E">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etVisitorNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|start"
+                android:hint="e.g. Delivery, Family visit, Plumber..."
+                android:inputType="textMultiLine"
+                android:lines="2"
+                android:textColor="@color/text_on_dark"
+                android:textColorHint="@color/text_on_dark_dim"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etVisitorPhone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="10-digit mobile number"
-                        android:inputType="phone"
-                        android:maxLength="10"
-                        android:textColor="#212121"
-                        android:textSize="15sp" />
-                </com.google.android.material.textfield.TextInputLayout>
+        <!-- LOADING INDICATOR -->
+        <ProgressBar
+            android:id="@+id/progressBarApprove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="12dp"
+            android:indeterminateTint="@color/text_on_dark"
+            android:visibility="gone" />
 
-                <!-- Expected Date (optional display field) -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Purpose / Note (Optional)"
-                    android:textColor="#37474F"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="6dp" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilVisitorNote"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:boxCornerRadiusTopStart="10dp"
-                    app:boxCornerRadiusTopEnd="10dp"
-                    app:boxCornerRadiusBottomStart="10dp"
-                    app:boxCornerRadiusBottomEnd="10dp"
-                    app:boxStrokeColor="#1A237E"
-                    app:hintTextColor="#1A237E">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etVisitorNote"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="e.g. Delivery, Family visit, Plumber..."
-                        android:inputType="textMultiLine"
-                        android:lines="2"
-                        android:textColor="#212121"
-                        android:textSize="15sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Status Message -->
+        <!-- STATUS MESSAGE -->
         <TextView
             android:id="@+id/tvApproveStatus"
             android:layout_width="match_parent"
@@ -191,42 +167,34 @@
             android:gravity="center"
             android:padding="12dp"
             android:text=""
+            android:textColor="@color/text_on_dark"
             android:textSize="14sp"
             android:visibility="gone" />
 
-        <!-- Loading Indicator -->
-        <ProgressBar
-            android:id="@+id/progressBarApprove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="12dp"
-            android:visibility="gone" />
-
-        <!-- Submit Button -->
+        <!-- SUBMIT BUTTON (matches login's primary button) -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnApproveVisitor"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
             android:text="Pre-Approve Visitor"
+            android:textColor="@color/text_on_dark"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            app:backgroundTint="#1A237E"
-            app:cornerRadius="12dp"
-            android:layout_marginBottom="12dp" />
+            app:backgroundTint="@color/brand_primary_dark"
+            app:cornerRadius="12dp" />
 
-        <!-- Back to Home Button -->
+        <!-- BACK BUTTON (matches login's outlined secondary button) -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBackToHome"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="48dp"
             android:text="Back to Home"
-            android:textSize="15sp"
-            android:textColor="#1A237E"
-            app:backgroundTint="#E8EAF6"
+            android:textColor="@color/text_on_dark"
+            android:textSize="14sp"
             app:cornerRadius="12dp"
-            android:layout_marginBottom="24dp" />
+            app:strokeColor="@color/brand_primary_light" />
 
     </LinearLayout>
 </ScrollView>

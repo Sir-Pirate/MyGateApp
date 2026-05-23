@@ -8,13 +8,17 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * DeliveryManager.java
+ *
+ * Architecture:
+ *
+ * deliveries/ -> delivery history
+ * lockers/    -> live locker state
  */
 
 public class DeliveryManager {
@@ -25,13 +29,19 @@ public class DeliveryManager {
     private static final FirebaseAuth auth =
             FirebaseAuth.getInstance();
 
-    // CHANGED HERE
-    private static final String COLLECTION =
+    // =========================================
+    // COLLECTIONS
+    // =========================================
+
+    private static final String DELIVERY_COLLECTION =
+            "deliveries";
+
+    private static final String LOCKER_COLLECTION =
             "lockers";
 
-    // ─────────────────────────────────────────
+    // =========================================
     // CALLBACKS
-    // ─────────────────────────────────────────
+    // =========================================
 
     public interface OnSuccessCallback {
         void onSuccess();
@@ -45,9 +55,9 @@ public class DeliveryManager {
         void onLoaded(List<DeliveryModel> deliveries);
     }
 
-    // ─────────────────────────────────────────
+    // =========================================
     // 1. NORMAL DELIVERY
-    // ─────────────────────────────────────────
+    // =========================================
 
     public static void logDelivery(
 
@@ -72,6 +82,9 @@ public class DeliveryManager {
             return;
         }
 
+        long currentTime =
+                System.currentTimeMillis();
+
         Map<String, Object> data =
                 new HashMap<>();
 
@@ -87,26 +100,19 @@ public class DeliveryManager {
 
         data.put("status", "pending");
 
-        data.put(
-                "storedAt",
-                System.currentTimeMillis()
-        );
+        data.put("storedAt", currentTime);
 
         data.put("pickedUpAt", 0L);
 
         data.put("guardId", guard.getUid());
 
-        data.put("storedInLocker", false);
-
         data.put("lockerId", "");
 
         data.put("lockerOtp", "");
 
-        data.put("lockerStoredAt", 0L);
-
         data.put("lockerExpiresAt", 0L);
 
-        db.collection(COLLECTION)
+        db.collection(DELIVERY_COLLECTION)
 
                 .add(data)
 
@@ -121,9 +127,9 @@ public class DeliveryManager {
                 );
     }
 
-    // ─────────────────────────────────────────
-    // 2. STORE IN LOCKER
-    // ─────────────────────────────────────────
+    // =========================================
+    // 2. STORE DELIVERY IN LOCKER
+    // =========================================
 
     public static void storeDeliveryInLocker(
 
@@ -158,64 +164,209 @@ public class DeliveryManager {
             return;
         }
 
-        Map<String, Object> data =
-                new HashMap<>();
+        long currentTime =
+                System.currentTimeMillis();
 
-        data.put("courierName", courierName);
+        // =====================================
+        // 24 HOUR EXPIRY
+        // =====================================
 
-        data.put("courierPhone", courierPhone);
+        long expiryTime =
+                currentTime +
+                        (24L * 60L * 60L * 1000L);
 
-        data.put("flatNumber", flatNumber);
+        // =====================================
+        // CHECK LOCKER AVAILABILITY
+        // =====================================
 
-        data.put("residentId", residentId);
+        db.collection(LOCKER_COLLECTION)
 
-        data.put("residentEmail", residentEmail);
+                .document(lockerId)
 
-        data.put("status", "locker");
+                .get()
 
-        data.put(
-                "storedAt",
-                System.currentTimeMillis()
-        );
+                .addOnSuccessListener(lockerDoc -> {
 
-        data.put("pickedUpAt", 0L);
+                    if (lockerDoc.exists()) {
 
-        data.put("guardId", guard.getUid());
+                        String status =
+                                lockerDoc.getString(
+                                        "status"
+                                );
 
-        data.put("storedInLocker", true);
+                        if (!"available".equals(status)) {
 
-        data.put("lockerId", lockerId);
+                            onFailure.onFailure(
+                                    "Locker already occupied"
+                            );
 
-        data.put("lockerOtp", lockerOtp);
+                            return;
+                        }
+                    }
 
-        data.put(
-                "lockerStoredAt",
-                System.currentTimeMillis()
-        );
+                    // =================================
+                    // CREATE DELIVERY HISTORY
+                    // =================================
 
-        data.put(
-                "lockerExpiresAt",
-                lockerExpiresAt
-        );
+                    Map<String, Object> deliveryData =
+                            new HashMap<>();
 
-        db.collection(COLLECTION)
+                    deliveryData.put(
+                            "courierName",
+                            courierName
+                    );
 
-                .add(data)
+                    deliveryData.put(
+                            "courierPhone",
+                            courierPhone
+                    );
 
-                .addOnSuccessListener(
-                        doc -> onSuccess.onSuccess()
-                )
+                    deliveryData.put(
+                            "flatNumber",
+                            flatNumber
+                    );
+
+                    deliveryData.put(
+                            "residentId",
+                            residentId
+                    );
+
+                    deliveryData.put(
+                            "residentEmail",
+                            residentEmail
+                    );
+
+                    deliveryData.put(
+                            "status",
+                            "locker"
+                    );
+
+                    deliveryData.put(
+                            "storedAt",
+                            currentTime
+                    );
+
+                    deliveryData.put(
+                            "pickedUpAt",
+                            0L
+                    );
+
+                    deliveryData.put(
+                            "guardId",
+                            guard.getUid()
+                    );
+
+                    deliveryData.put(
+                            "lockerId",
+                            lockerId
+                    );
+
+                    deliveryData.put(
+                            "lockerOtp",
+                            lockerOtp
+                    );
+
+                    deliveryData.put(
+                            "lockerExpiresAt",
+                            expiryTime
+                    );
+
+                    db.collection(DELIVERY_COLLECTION)
+
+                            .add(deliveryData)
+
+                            .addOnSuccessListener(
+                                    deliveryDoc -> {
+
+                                        // =========================
+                                        // UPDATE LOCKER STATE
+                                        // =========================
+
+                                        Map<String, Object>
+                                                lockerData =
+                                                new HashMap<>();
+
+                                        lockerData.put(
+                                                "lockerId",
+                                                lockerId
+                                        );
+
+                                        lockerData.put(
+                                                "residentId",
+                                                residentId
+                                        );
+
+                                        lockerData.put(
+                                                "residentEmail",
+                                                residentEmail
+                                        );
+
+                                        lockerData.put(
+                                                "deliveryId",
+                                                deliveryDoc.getId()
+                                        );
+
+                                        lockerData.put(
+                                                "otp",
+                                                lockerOtp
+                                        );
+
+                                        lockerData.put(
+                                                "status",
+                                                "active"
+                                        );
+
+                                        lockerData.put(
+                                                "storedAt",
+                                                currentTime
+                                        );
+
+                                        lockerData.put(
+                                                "expiresAt",
+                                                expiryTime
+                                        );
+
+                                        db.collection(
+                                                        LOCKER_COLLECTION
+                                                )
+
+                                                .document(lockerId)
+
+                                                .set(lockerData)
+
+                                                .addOnSuccessListener(
+                                                        unused ->
+                                                                onSuccess.onSuccess()
+                                                )
+
+                                                .addOnFailureListener(
+                                                        e ->
+                                                                onFailure.onFailure(
+                                                                        e.getMessage()
+                                                                )
+                                                );
+                                    }
+                            )
+
+                            .addOnFailureListener(
+                                    e ->
+                                            onFailure.onFailure(
+                                                    e.getMessage()
+                                            )
+                            );
+                })
 
                 .addOnFailureListener(
-                        e -> onFailure.onFailure(
-                                e.getMessage()
-                        )
+                        e ->
+                                onFailure.onFailure(
+                                        e.getMessage()
+                                )
                 );
     }
 
-    // ─────────────────────────────────────────
-    // 3. GET PENDING
-    // ─────────────────────────────────────────
+    // =========================================
+    // 3. GET PENDING DELIVERIES
+    // =========================================
 
     public static void getPendingDeliveries(
 
@@ -224,7 +375,7 @@ public class DeliveryManager {
             OnFailureCallback onFailure
     ) {
 
-        db.collection(COLLECTION)
+        db.collection(DELIVERY_COLLECTION)
 
                 .orderBy(
                         "storedAt",
@@ -238,7 +389,8 @@ public class DeliveryManager {
                     List<DeliveryModel> list =
                             new ArrayList<>();
 
-                    for (QueryDocumentSnapshot doc : snapshot) {
+                    for (QueryDocumentSnapshot doc :
+                            snapshot) {
 
                         DeliveryModel d =
                                 doc.toObject(
@@ -254,15 +406,16 @@ public class DeliveryManager {
                 })
 
                 .addOnFailureListener(
-                        e -> onFailure.onFailure(
-                                e.getMessage()
-                        )
+                        e ->
+                                onFailure.onFailure(
+                                        e.getMessage()
+                                )
                 );
     }
 
-    // ─────────────────────────────────────────
-    // 4. GET ALL
-    // ─────────────────────────────────────────
+    // =========================================
+    // 4. GET ALL DELIVERIES
+    // =========================================
 
     public static void getAllDeliveries(
 
@@ -274,11 +427,21 @@ public class DeliveryManager {
     ) {
 
         Query query =
-                db.collection(COLLECTION)
+                db.collection(DELIVERY_COLLECTION)
+
                         .orderBy(
                                 "storedAt",
                                 Query.Direction.DESCENDING
                         );
+
+        if (statusFilter != null) {
+
+            query =
+                    query.whereEqualTo(
+                            "status",
+                            statusFilter
+                    );
+        }
 
         query.get()
 
@@ -287,7 +450,8 @@ public class DeliveryManager {
                     List<DeliveryModel> list =
                             new ArrayList<>();
 
-                    for (QueryDocumentSnapshot doc : snapshot) {
+                    for (QueryDocumentSnapshot doc :
+                            snapshot) {
 
                         DeliveryModel d =
                                 doc.toObject(
@@ -303,15 +467,16 @@ public class DeliveryManager {
                 })
 
                 .addOnFailureListener(
-                        e -> onFailure.onFailure(
-                                e.getMessage()
-                        )
+                        e ->
+                                onFailure.onFailure(
+                                        e.getMessage()
+                                )
                 );
     }
 
-    // ─────────────────────────────────────────
+    // =========================================
     // 5. GET MY DELIVERIES
-    // ─────────────────────────────────────────
+    // =========================================
 
     public static void getMyDeliveries(
 
@@ -322,7 +487,7 @@ public class DeliveryManager {
             OnFailureCallback onFailure
     ) {
 
-        db.collection(COLLECTION)
+        db.collection(DELIVERY_COLLECTION)
 
                 .whereEqualTo(
                         "flatNumber",
@@ -336,7 +501,8 @@ public class DeliveryManager {
                     List<DeliveryModel> list =
                             new ArrayList<>();
 
-                    for (QueryDocumentSnapshot doc : snapshot) {
+                    for (QueryDocumentSnapshot doc :
+                            snapshot) {
 
                         DeliveryModel d =
                                 doc.toObject(
@@ -352,15 +518,16 @@ public class DeliveryManager {
                 })
 
                 .addOnFailureListener(
-                        e -> onFailure.onFailure(
-                                e.getMessage()
-                        )
+                        e ->
+                                onFailure.onFailure(
+                                        e.getMessage()
+                                )
                 );
     }
 
-    // ─────────────────────────────────────────
-    // 6. RESIDENT LOCKERS
-    // ─────────────────────────────────────────
+    // =========================================
+    // 6. GET RESIDENT LOCKERS
+    // =========================================
 
     public static void getResidentLockerDeliveries(
 
@@ -371,11 +538,16 @@ public class DeliveryManager {
             OnFailureCallback onFailure
     ) {
 
-        db.collection(COLLECTION)
+        db.collection(DELIVERY_COLLECTION)
 
                 .whereEqualTo(
                         "residentId",
                         residentId
+                )
+
+                .whereEqualTo(
+                        "status",
+                        "locker"
                 )
 
                 .get()
@@ -384,6 +556,9 @@ public class DeliveryManager {
 
                     List<DeliveryModel> list =
                             new ArrayList<>();
+
+                    long currentTime =
+                            System.currentTimeMillis();
 
                     for (DocumentSnapshot doc :
                             snapshot.getDocuments()) {
@@ -397,20 +572,23 @@ public class DeliveryManager {
 
                             d.setId(doc.getId());
 
-                            long currentTime =
-                                    System.currentTimeMillis();
+                            // AUTO EXPIRE
 
                             if (
                                     d.getLockerExpiresAt() > 0 &&
                                             currentTime >
-                                                    d.getLockerExpiresAt() &&
-                                            !d.isPickedUp()
+                                                    d.getLockerExpiresAt()
                             ) {
 
                                 d.setStatus("expired");
                             }
 
-                            list.add(d);
+                            // SHOW ONLY ACTIVE
+
+                            if (!d.isExpired()) {
+
+                                list.add(d);
+                            }
                         }
                     }
 
@@ -418,15 +596,16 @@ public class DeliveryManager {
                 })
 
                 .addOnFailureListener(
-                        e -> onFailure.onFailure(
-                                e.getMessage()
-                        )
+                        e ->
+                                onFailure.onFailure(
+                                        e.getMessage()
+                                )
                 );
     }
 
-    // ─────────────────────────────────────────
+    // =========================================
     // 7. CONFIRM PICKUP
-    // ─────────────────────────────────────────
+    // =========================================
 
     public static void confirmPickup(
 
@@ -437,71 +616,146 @@ public class DeliveryManager {
             OnFailureCallback onFailure
     ) {
 
-        Map<String, Object> updates =
-                new HashMap<>();
-
-        updates.put("status", "pickedup");
-
-        updates.put(
-                "pickedUpAt",
-                System.currentTimeMillis()
-        );
-
-        db.collection(COLLECTION)
+        db.collection(DELIVERY_COLLECTION)
 
                 .document(deliveryId)
 
-                .update(updates)
+                .get()
 
-                .addOnSuccessListener(
-                        aVoid -> onSuccess.onSuccess()
-                )
+                .addOnSuccessListener(documentSnapshot -> {
+
+                    if (!documentSnapshot.exists()) {
+
+                        onFailure.onFailure(
+                                "Delivery not found"
+                        );
+
+                        return;
+                    }
+
+                    String lockerId =
+                            documentSnapshot.getString(
+                                    "lockerId"
+                            );
+
+                    Map<String, Object> updates =
+                            new HashMap<>();
+
+                    updates.put(
+                            "status",
+                            "pickedup"
+                    );
+
+                    updates.put(
+                            "pickedUpAt",
+                            System.currentTimeMillis()
+                    );
+
+                    // =================================
+                    // UPDATE DELIVERY
+                    // =================================
+
+                    db.collection(DELIVERY_COLLECTION)
+
+                            .document(deliveryId)
+
+                            .update(updates)
+
+                            .addOnSuccessListener(
+                                    aVoid -> {
+
+                                        // =====================
+                                        // FREE LOCKER
+                                        // =====================
+
+                                        if (lockerId != null &&
+                                                !lockerId.isEmpty()) {
+
+                                            Map<String, Object>
+                                                    lockerUpdate =
+                                                    new HashMap<>();
+
+                                            lockerUpdate.put(
+                                                    "status",
+                                                    "available"
+                                            );
+
+                                            lockerUpdate.put(
+                                                    "residentId",
+                                                    ""
+                                            );
+
+                                            lockerUpdate.put(
+                                                    "residentEmail",
+                                                    ""
+                                            );
+
+                                            lockerUpdate.put(
+                                                    "deliveryId",
+                                                    ""
+                                            );
+
+                                            lockerUpdate.put(
+                                                    "otp",
+                                                    ""
+                                            );
+
+                                            lockerUpdate.put(
+                                                    "storedAt",
+                                                    0L
+                                            );
+
+                                            lockerUpdate.put(
+                                                    "expiresAt",
+                                                    0L
+                                            );
+
+                                            db.collection(
+                                                            LOCKER_COLLECTION
+                                                    )
+
+                                                    .document(lockerId)
+
+                                                    .update(lockerUpdate)
+
+                                                    .addOnSuccessListener(
+                                                            unused ->
+                                                                    onSuccess.onSuccess()
+                                                    )
+
+                                                    .addOnFailureListener(
+                                                            e ->
+                                                                    onFailure.onFailure(
+                                                                            e.getMessage()
+                                                                    )
+                                                    );
+
+                                        } else {
+
+                                            onSuccess.onSuccess();
+                                        }
+                                    }
+                            )
+
+                            .addOnFailureListener(
+                                    e ->
+                                            onFailure.onFailure(
+                                                    e.getMessage()
+                                            )
+                            );
+                })
 
                 .addOnFailureListener(
-                        e -> onFailure.onFailure(
-                                e.getMessage()
-                        )
+                        e ->
+                                onFailure.onFailure(
+                                        e.getMessage()
+                                )
                 );
     }
 
-    // ─────────────────────────────────────────
-    // 8. MARK EXPIRED
-    // ─────────────────────────────────────────
-
-    public static void markLockerExpired(
-
-            String deliveryId,
-
-            OnSuccessCallback onSuccess,
-
-            OnFailureCallback onFailure
-    ) {
-
-        Map<String, Object> updates =
-                new HashMap<>();
-
-        updates.put("status", "expired");
-
-        db.collection(COLLECTION)
-
-                .document(deliveryId)
-
-                .update(updates)
-
-                .addOnSuccessListener(
-                        aVoid -> onSuccess.onSuccess()
-                )
-
-                .addOnFailureListener(
-                        e -> onFailure.onFailure(
-                                e.getMessage()
-                        )
-                );
-    }
-
-    // ─────────────────────────────────────────
-    // 9. DELETE
-    // ─────────────────────────────────────────
+    // =========================================
+    // 8. DELETE DELIVERY
+    // =========================================
 
     public static void deleteDelivery(
 
@@ -512,7 +766,7 @@ public class DeliveryManager {
             OnFailureCallback onFailure
     ) {
 
-        db.collection(COLLECTION)
+        db.collection(DELIVERY_COLLECTION)
 
                 .document(deliveryId)
 
@@ -523,9 +777,10 @@ public class DeliveryManager {
                 )
 
                 .addOnFailureListener(
-                        e -> onFailure.onFailure(
-                                e.getMessage()
-                        )
+                        e ->
+                                onFailure.onFailure(
+                                        e.getMessage()
+                                )
                 );
     }
 }

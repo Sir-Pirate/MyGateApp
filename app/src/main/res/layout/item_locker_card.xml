@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="14dp"
-    app:cardElevation="4dp">
+    app:cardElevation="3dp"
+    app:cardBackgroundColor="@color/bg_card">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,55 +15,142 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvLockerCourier"
-            android:layout_width="wrap_content"
+        <!-- Top row: icon + courier name + status badge -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Amazon"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:textColor="#212121" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
 
-        <TextView
-            android:id="@+id/tvLockerId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Locker: A1"
-            android:textSize="14sp"
-            android:layout_marginTop="8dp" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                app:cardCornerRadius="22dp"
+                app:cardBackgroundColor="@color/accent_delivery_light">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="📦"
+                    android:textSize="20sp" />
+            </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/tvLockerOtp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="OTP: 1234"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp" />
+            <TextView
+                android:id="@+id/tvLockerCourier"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:text="Amazon"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/text_primary" />
 
-        <TextView
-            android:id="@+id/tvLockerExpiry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Expires:"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="@color/status_green_light">
+                <TextView
+                    android:id="@+id/tvLockerStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Active"
+                    android:textColor="@color/status_green"
+                    android:textStyle="bold"
+                    android:textSize="11sp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp" />
+            </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/tvLockerStatus"
-            android:layout_width="wrap_content"
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Locker ID row -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Active"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_marginTop="8dp" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="6dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Locker"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+            <TextView
+                android:id="@+id/tvLockerId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A1"
+                android:textColor="@color/locker_id_color"
+                android:textStyle="bold"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- OTP row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="6dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="OTP"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+            <TextView
+                android:id="@+id/tvLockerOtp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1234"
+                android:textColor="@color/locker_otp_color"
+                android:textStyle="bold"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- Expiry row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Expires"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+            <TextView
+                android:id="@+id/tvLockerExpiry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="—"
+                android:textColor="@color/locker_expiry_color"
+                android:textSize="13sp" />
+        </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPickupLocker"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Mark Picked Up"
-            android:layout_marginTop="12dp" />
+            android:layout_height="44dp"
+            android:text="@string/btn_pickup_locker"
+            android:textSize="14sp"
+            app:backgroundTint="@color/brand_primary"
+            app:cornerRadius="10dp" />
 
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>

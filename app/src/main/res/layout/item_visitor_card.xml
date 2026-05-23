@@ -1,33 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
-    app:cardCornerRadius="14dp"
-    app:cardElevation="2dp"
-    app:cardBackgroundColor="#FFFFFF">
+    app:cardBackgroundColor="@color/brand_primary_dark"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/brand_primary_light"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical">
+        android:padding="16dp">
 
         <!-- Avatar Circle -->
         <androidx.cardview.widget.CardView
             android:layout_width="46dp"
             android:layout_height="46dp"
+            app:cardBackgroundColor="@color/brand_primary"
             app:cardCornerRadius="23dp"
-            app:cardBackgroundColor="#E8EAF6">
+            app:cardElevation="0dp"
+            app:strokeColor="@color/brand_primary_light"
+            app:strokeWidth="1dp">
+
             <TextView
                 android:id="@+id/tvAvatar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="R"
-                android:textColor="#1A237E"
+                android:textColor="@color/text_on_dark"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </androidx.cardview.widget.CardView>
@@ -36,16 +44,16 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginStart="12dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvVisitorName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Visitor Name"
-                android:textColor="#212121"
+                android:textColor="@color/text_on_dark"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
@@ -53,56 +61,57 @@
                 android:id="@+id/tvVisitorPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:text="+91 XXXXXXXXXX"
-                android:textColor="#78909C"
-                android:textSize="13sp"
-                android:layout_marginTop="2dp" />
+                android:textColor="@color/text_on_dark_dim"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tvVisitorNote"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:text="Family visit"
-                android:textColor="#9E9E9E"
-                android:textSize="12sp"
-                android:layout_marginTop="2dp" />
+                android:textColor="@color/text_on_dark_dim"
+                android:textSize="12sp" />
         </LinearLayout>
 
-        <!-- Status Badge -->
+        <!-- Status Badge + Time -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/status_green"
                 app:cardCornerRadius="8dp"
-                app:cardBackgroundColor="#E8F5E9">
+                app:cardElevation="0dp">
+
                 <TextView
                     android:id="@+id/tvStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Approved"
-                    android:textColor="#2E7D32"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
+                    android:paddingStart="10dp"
                     android:paddingTop="4dp"
-                    android:paddingBottom="4dp" />
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="4dp"
+                    android:text="Approved"
+                    android:textColor="@color/text_on_dark"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
             <TextView
                 android:id="@+id/tvTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
                 android:text="10:30 AM"
-                android:textColor="#BDBDBD"
-                android:textSize="11sp"
-                android:layout_marginTop="4dp" />
+                android:textColor="@color/text_on_dark_dim"
+                android:textSize="11sp" />
         </LinearLayout>
-
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -15,36 +15,45 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class ResidentLockerActivity extends AppCompatActivity {
 
     private LinearLayout layoutLockerList;
+
     private LinearLayout layoutEmpty;
+
     private ProgressBar progressBar;
 
     private FirebaseUser currentUser;
 
+    private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_resident_locker);
 
         currentUser =
                 FirebaseAuth.getInstance().getCurrentUser();
+
+        db = FirebaseFirestore.getInstance();
 
         bindViews();
 
         loadLockers();
     }
 
-    // ====================================================
+    // =========================================
     // BIND VIEWS
-    // ====================================================
+    // =========================================
 
     private void bindViews() {
 
@@ -58,9 +67,9 @@ public class ResidentLockerActivity extends AppCompatActivity {
                 findViewById(R.id.progressBarLocker);
     }
 
-    // ====================================================
+    // =========================================
     // LOAD LOCKERS
-    // ====================================================
+    // =========================================
 
     private void loadLockers() {
 
@@ -77,151 +86,190 @@ public class ResidentLockerActivity extends AppCompatActivity {
 
         showLoading(true);
 
-        DeliveryManager.getResidentLockerDeliveries(
+        db.collection("lockers")
 
-                currentUser.getUid(),
+                .whereEqualTo(
+                        "residentId",
+                        currentUser.getUid()
+                )
 
-                deliveries -> {
+                .get()
+
+                .addOnSuccessListener(snapshot -> {
 
                     showLoading(false);
 
-                    renderLockers(deliveries);
-                },
+                    layoutLockerList.removeAllViews();
 
-                err -> {
+                    if (snapshot.isEmpty()) {
+
+                        layoutEmpty.setVisibility(View.VISIBLE);
+
+                        layoutLockerList.setVisibility(View.GONE);
+
+                        return;
+                    }
+
+                    layoutEmpty.setVisibility(View.GONE);
+
+                    layoutLockerList.setVisibility(View.VISIBLE);
+
+                    LayoutInflater inflater =
+                            LayoutInflater.from(this);
+
+                    for (QueryDocumentSnapshot doc : snapshot) {
+
+                        LockerModel locker =
+                                doc.toObject(
+                                        LockerModel.class
+                                );
+
+                        locker.setLockerId(doc.getId());
+
+                        renderLockerCard(
+                                inflater,
+                                locker
+                        );
+                    }
+                })
+
+                .addOnFailureListener(e -> {
 
                     showLoading(false);
 
                     Toast.makeText(
                             this,
-                            err,
-                            Toast.LENGTH_SHORT
+                            e.getMessage(),
+                            Toast.LENGTH_LONG
                     ).show();
-                }
-        );
+                });
     }
 
-    // ====================================================
-    // RENDER LOCKERS
-    // ====================================================
+    // =========================================
+    // RENDER CARD
+    // =========================================
 
     @SuppressLint("SetTextI18n")
-    private void renderLockers(
-            List<DeliveryModel> deliveries
+    private void renderLockerCard(
+
+            LayoutInflater inflater,
+
+            LockerModel locker
     ) {
 
-        layoutLockerList.removeAllViews();
+        View card = inflater.inflate(
 
-        if (deliveries == null || deliveries.isEmpty()) {
+                R.layout.item_locker_card,
 
-            layoutEmpty.setVisibility(View.VISIBLE);
+                layoutLockerList,
 
-            layoutLockerList.setVisibility(View.GONE);
+                false
+        );
 
-            return;
+        TextView tvCourier =
+                card.findViewById(R.id.tvLockerCourier);
+
+        TextView tvLockerId =
+                card.findViewById(R.id.tvLockerId);
+
+        TextView tvOtp =
+                card.findViewById(R.id.tvLockerOtp);
+
+        TextView tvExpiry =
+                card.findViewById(R.id.tvLockerExpiry);
+
+        TextView tvStatus =
+                card.findViewById(R.id.tvLockerStatus);
+
+        MaterialButton btnPickup =
+                card.findViewById(R.id.btnPickupLocker);
+
+        // =====================================
+        // DATA
+        // =====================================
+
+        tvCourier.setText(
+                locker.getCourierName() != null
+                        ? locker.getCourierName()
+                        : "Package Ready"
+        );
+
+        tvLockerId.setText(
+                "Locker: " + locker.getLockerId()
+        );
+
+        tvOtp.setText(
+                "OTP: " + locker.getOtp()
+        );
+
+        tvExpiry.setText(
+                "Expires: " +
+                        formatTime(
+                                locker.getExpiresAt()
+                        )
+        );
+
+        // =====================================
+        // EXPIRED
+        // =====================================
+
+        if (locker.isExpired()) {
+
+            tvStatus.setText("Expired");
+
+            tvStatus.setTextColor(Color.RED);
+
+            btnPickup.setVisibility(View.GONE);
+
+            autoReleaseLocker(locker);
+
         }
 
-        layoutEmpty.setVisibility(View.GONE);
+        // =====================================
+        // ACTIVE
+        // =====================================
 
-        layoutLockerList.setVisibility(View.VISIBLE);
+        else {
 
-        LayoutInflater inflater =
-                LayoutInflater.from(this);
-
-        for (DeliveryModel delivery : deliveries) {
-
-            View card = inflater.inflate(
-                    R.layout.item_locker_card,
-                    layoutLockerList,
-                    false
+            tvStatus.setText(
+                    "Waiting for Pickup"
             );
 
-            TextView tvCourier =
-                    card.findViewById(R.id.tvLockerCourier);
-
-            TextView tvLockerId =
-                    card.findViewById(R.id.tvLockerId);
-
-            TextView tvOtp =
-                    card.findViewById(R.id.tvLockerOtp);
-
-            TextView tvExpiry =
-                    card.findViewById(R.id.tvLockerExpiry);
-
-            TextView tvStatus =
-                    card.findViewById(R.id.tvLockerStatus);
-
-            MaterialButton btnPickup =
-                    card.findViewById(R.id.btnPickupLocker);
-
-            tvCourier.setText(
-                    delivery.getCourierName()
+            tvStatus.setTextColor(
+                    Color.parseColor("#2E7D32")
             );
 
-            tvLockerId.setText(
-                    "Locker: " + delivery.getLockerId()
+            btnPickup.setVisibility(View.VISIBLE);
+
+            btnPickup.setOnClickListener(v ->
+                    pickupLocker(locker)
             );
-
-            tvOtp.setText(
-                    "OTP: " + delivery.getLockerOtp()
-            );
-
-            tvExpiry.setText(
-                    "Expires: " +
-                            formatTime(
-                                    delivery.getLockerExpiresAt()
-                            )
-            );
-
-            // ====================================
-            // EXPIRED
-            // ====================================
-
-            if (delivery.isExpired()) {
-
-                tvStatus.setText("Expired");
-
-                tvStatus.setTextColor(Color.RED);
-
-                btnPickup.setVisibility(View.GONE);
-            }
-
-            // ====================================
-            // ACTIVE
-            // ====================================
-
-            else {
-
-                tvStatus.setText("Active");
-
-                tvStatus.setTextColor(
-                        Color.parseColor("#2E7D32")
-                );
-
-                btnPickup.setVisibility(View.VISIBLE);
-
-                btnPickup.setOnClickListener(v ->
-                        markPickedUp(delivery)
-                );
-            }
-
-            layoutLockerList.addView(card);
         }
+
+        layoutLockerList.addView(card);
     }
 
-    // ====================================================
-    // MARK PICKED UP
-    // ====================================================
+    // =========================================
+    // PICKUP
+    // =========================================
 
-    private void markPickedUp(
-            DeliveryModel delivery
+    private void pickupLocker(
+            LockerModel locker
     ) {
 
-        DeliveryManager.confirmPickup(
+        db.collection("lockers")
 
-                delivery.getId(),
+                .document(locker.getLockerId())
 
-                () -> {
+                .update(
+                        "status", "available",
+                        "residentId", "",
+                        "residentEmail", "",
+                        "otp", "",
+                        "deliveryId", ""
+                )
+
+                .addOnSuccessListener(unused -> {
 
                     Toast.makeText(
                             this,
@@ -230,19 +278,42 @@ public class ResidentLockerActivity extends AppCompatActivity {
                     ).show();
 
                     loadLockers();
-                },
+                })
 
-                err -> Toast.makeText(
-                        this,
-                        err,
-                        Toast.LENGTH_SHORT
-                ).show()
-        );
+                .addOnFailureListener(e ->
+
+                        Toast.makeText(
+                                this,
+                                e.getMessage(),
+                                Toast.LENGTH_SHORT
+                        ).show()
+                );
     }
 
-    // ====================================================
+    // =========================================
+    // AUTO RELEASE
+    // =========================================
+
+    private void autoReleaseLocker(
+            LockerModel locker
+    ) {
+
+        db.collection("lockers")
+
+                .document(locker.getLockerId())
+
+                .update(
+                        "status", "available",
+                        "residentId", "",
+                        "residentEmail", "",
+                        "otp", "",
+                        "deliveryId", ""
+                );
+    }
+
+    // =========================================
     // HELPERS
-    // ====================================================
+    // =========================================
 
     private void showLoading(boolean show) {
 
@@ -255,7 +326,7 @@ public class ResidentLockerActivity extends AppCompatActivity {
 
         return new SimpleDateFormat(
 
-                "dd MMM, hh:mm a",
+                "dd MMM yyyy, hh:mm a",
 
                 Locale.getDefault()
 
