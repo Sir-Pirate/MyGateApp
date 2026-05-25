@@ -194,7 +194,7 @@
             android:textColor="@color/text_on_dark"
             android:textSize="14sp"
             app:cornerRadius="12dp"
-            app:strokeColor="@color/brand_primary_light" />
+            app:strokeColor="@color/card_stroke" />
 
     </LinearLayout>
 </ScrollView>

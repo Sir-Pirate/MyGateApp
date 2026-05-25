@@ -17,7 +17,7 @@ public class StaffEntryActivity extends AppCompatActivity {
     private TextInputEditText etStaffPhone;
     private MaterialButton btnSearchStaff, btnLoginStaff, btnLogoutStaff;
 
-    private LinearLayout cardStaffResult;
+    private androidx.cardview.widget.CardView cardStaffResult;
     private TextView tvStaffName, tvStaffDetails, tvStaffStatus, tvStatus;
 
     private String foundStaffId = null;

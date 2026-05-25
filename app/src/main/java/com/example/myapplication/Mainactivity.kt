@@ -2,7 +2,6 @@ package com.example.myapplication
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -24,14 +23,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.loginpage)
 
-        editTextUsername = findViewById(R.id.editTextUsername)
-        editTextPassword = findViewById(R.id.editTextPassword)
-        buttonLogin = findViewById(R.id.buttonLogin)
+        editTextUsername   = findViewById(R.id.editTextUsername)
+        editTextPassword   = findViewById(R.id.editTextPassword)
+        buttonLogin        = findViewById(R.id.buttonLogin)
         buttonGoToRegister = findViewById(R.id.buttonGoToRegister)
 
-        // Login button
         buttonLogin!!.setOnClickListener {
-            val email = editTextUsername!!.text.toString().trim()
+
+            val email    = editTextUsername!!.text.toString().trim()
             val password = editTextPassword!!.text.toString().trim()
 
             if (email.isEmpty() || password.isEmpty()) {
@@ -58,12 +57,12 @@ class MainActivity : AppCompatActivity() {
                         val user = FirebaseAuth.getInstance().currentUser
 
                         if (user != null) {
-                            val uid = user.uid
 
-                            db.collection("users").document(uid).get()
+                            db.collection("users").document(user.uid).get()
                                 .addOnSuccessListener { document ->
 
                                     if (document.exists()) {
+
                                         val roleFromFirestore =
                                             document.getString("role") ?: "resident"
 
@@ -71,7 +70,17 @@ class MainActivity : AppCompatActivity() {
                                             this@MainActivity,
                                             HomeActivity::class.java
                                         )
+
                                         intent.putExtra("role", roleFromFirestore)
+
+                                        // FIX: Clear the entire back stack so no
+                                        // stale HomeActivity instance can survive.
+                                        // Pressing back from Home now exits the app
+                                        // instead of going to a cached old screen.
+                                        intent.flags =
+                                            Intent.FLAG_ACTIVITY_NEW_TASK or
+                                                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+
                                         startActivity(intent)
                                         finish()
 
@@ -127,10 +136,8 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        // Go to Register button
         buttonGoToRegister!!.setOnClickListener {
-            val intent = Intent(this@MainActivity, RegisterActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this@MainActivity, RegisterActivity::class.java))
         }
     }
 }

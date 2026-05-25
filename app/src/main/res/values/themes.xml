@@ -12,7 +12,7 @@
         <item name="colorError">#C62828</item>
         <item name="colorSurface">#FFFFFF</item>
         <item name="android:colorBackground">#F0F2F5</item>
-        <item name="android:statusBarColor">#0D1B6E</item>
+        <item name="android:statusBarColor">#1A237E</item>
         <item name="android:windowLightStatusBar">false</item>
 
     </style>

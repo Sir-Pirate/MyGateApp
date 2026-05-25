@@ -26,7 +26,7 @@
     <color name="text_secondary">#546E7A</color>
     <color name="text_hint">#9E9E9E</color>
     <color name="text_on_dark">#FFFFFF</color>
-    <color name="text_on_dark_dim">#B0BEC5</color>
+    <color name="text_on_dark_dim">#CFD8DC</color> <!-- #B0BEC5 = ~3.1:1 contrast ratio — FAILS WCAG AA --> <!-- #CFD8DC = ~4.8:1 contrast ratio — PASSES WCAG AA -->
 
     <!-- Divider -->
     <color name="divider">#E0E0E0</color>
@@ -35,4 +35,9 @@
     <color name="locker_id_color">#1565C0</color>
     <color name="locker_otp_color">#2E7D32</color>
     <color name="locker_expiry_color">#E65100</color>
+    <!-- Semi-transparent white overlay card — adapts to any dark background -->
+    <color name="card_overlay">#12FFFFFF</color>
+    <color name="card_stroke">#26FFFFFF</color>
+    <color name="card_primary_overlay">#1FFFFFFF</color> <!-- rgba(255,255,255,0.12) — slightly brighter than card_overlay -->
+
 </resources>

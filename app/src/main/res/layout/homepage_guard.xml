@@ -13,34 +13,76 @@
         android:orientation="vertical"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:paddingTop="60dp"
+        android:paddingTop="20dp"
         android:paddingBottom="40dp">
 
-        <!-- HEADER -->
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- HEADER (Fix 7: avatar replaces standalone title + logout button) -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textColor="@color/text_on_dark"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name"
+                    android:textColor="@color/text_on_dark"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvWelcome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Welcome back!"
+                    android:textColor="@color/text_on_dark_dim"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <!-- Avatar circle button — tap to logout (Fix 7) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:cardBackgroundColor="@color/card_overlay"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/card_stroke"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:id="@+id/btnAvatarMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foreground="@drawable/ripple_tile"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvAvatarInitial"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="U"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/tvWelcome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Welcome back!"
-            android:textColor="@color/text_on_dark_dim"
-            android:textSize="13sp" />
-
-        <!-- Role label (set dynamically in HomeActivity) -->
-        <TextView
-            android:id="@+id/tvRoleLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text=""
+            android:text="Security Dashboard"
             android:textColor="@color/text_on_dark_dim"
             android:textSize="11sp"
             android:textStyle="italic" />
@@ -82,7 +124,7 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <!-- QUICK STATS -->
+        <!-- QUICK STATS (Fix 1: card_overlay; Fix 5: IDs for live data) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -119,7 +161,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/stat_visitors"
+                        android:text="Today's Visitors"
                         android:textColor="@color/text_on_dark_dim"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -156,7 +198,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/stat_deliveries"
+                        android:text="Deliveries"
                         android:textColor="@color/text_on_dark_dim"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -199,63 +241,30 @@
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
-        <!-- VISITOR PRIMARY ACTIONS -->
+        <!-- PRIMARY ACTIONS -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
+            <!-- Visitor Arrival (Fix 3: card_primary_overlay + accent stroke) -->
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@color/card_overlay"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    android:id="@+id/btnGoToVisitorApprove"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🔐"
-                        android:textSize="26sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Pre-Approve"
-                        android:textColor="@color/text_on_dark"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@android:color/transparent"
+                app:cardBackgroundColor="@color/card_primary_overlay"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/card_stroke"
-                app:strokeWidth="1dp">
+                app:strokeColor="@color/brand_primary_light"
+                app:strokeWidth="1.5dp">
 
                 <LinearLayout
                     android:id="@+id/btnGoToVisitorArrival"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:foreground="?attr/selectableItemBackground"
+                    android:foreground="@drawable/ripple_tile"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -269,29 +278,80 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Arrival"
+                        android:text="Visitor Arrival"
                         android:textColor="@color/text_on_dark"
                         android:textSize="14sp"
                         android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Log gate entry"
+                        android:textColor="@color/text_on_dark_dim"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Delivery Log (Fix 1: transparent + stroke; Fix 4: ripple_tile) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/card_stroke"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:id="@+id/btnDelivery"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foreground="@drawable/ripple_tile"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🚚"
+                        android:textSize="26sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Delivery Log"
+                        android:textColor="@color/text_on_dark"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Manage parcels"
+                        android:textColor="@color/text_on_dark_dim"
+                        android:textSize="10sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
-        <!-- SECTION DIVIDER LABEL -->
+        <!-- SECTION LABEL -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:layout_marginBottom="12dp"
-            android:text="Quick Access"
+            android:text="Gate Operations"
             android:textColor="@color/text_on_dark_dim"
             android:textSize="13sp"
             android:textStyle="bold"
             android:letterSpacing="0.08" />
 
-        <!-- QUICK ACCESS GRID -->
-        <!-- REMOVED: Residents (no backend), Notices (no backend), Parking (no backend), SOS (no backend) -->
-        <!-- KEPT: My Profile (kept as requested, backend coming soon) -->
+        <!-- GRID: Visitor Auth | Staff Entry | Alerts -->
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -313,7 +373,7 @@
                     android:id="@+id/btnVisitorAuth"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:foreground="?attr/selectableItemBackground"
+                    android:foreground="@drawable/ripple_tile"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -333,43 +393,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Delivery -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="4dp"
-                app:cardBackgroundColor="@color/card_overlay"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/card_stroke"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:id="@+id/btnDelivery"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🚚"
-                        android:textSize="24sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Delivery"
-                        android:textColor="@color/text_on_dark"
-                        android:textSize="11sp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Staff -->
+            <!-- Staff Entry -->
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="90dp"
@@ -385,7 +409,7 @@
                     android:id="@+id/btnStaff"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:foreground="?attr/selectableItemBackground"
+                    android:foreground="@drawable/ripple_tile"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -399,7 +423,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Staff"
+                        android:text="Staff Entry"
                         android:textColor="@color/text_on_dark"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -421,7 +445,7 @@
                     android:id="@+id/btnAlerts"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:foreground="?attr/selectableItemBackground"
+                    android:foreground="@drawable/ripple_tile"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -441,128 +465,9 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Staff Dashboard -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="4dp"
-                app:cardBackgroundColor="@color/card_overlay"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/card_stroke"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:id="@+id/btnStaffDashboard"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="📊"
-                        android:textSize="24sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Staff Dashboard"
-                        android:textColor="@color/text_on_dark"
-                        android:textSize="11sp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- My Locker -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="4dp"
-                app:cardBackgroundColor="@color/card_overlay"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/card_stroke"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:id="@+id/btnLockerStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🔒"
-                        android:textSize="24sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="My Locker"
-                        android:textColor="@color/text_on_dark"
-                        android:textSize="11sp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- My Profile (kept — backend coming soon) -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="4dp"
-                app:cardBackgroundColor="@color/card_overlay"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/card_stroke"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:id="@+id/btnMyProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="⚙️"
-                        android:textSize="24sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="My Profile"
-                        android:textColor="@color/text_on_dark"
-                        android:textSize="11sp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
         </GridLayout>
 
-        <!-- LOGOUT -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnLogout"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="32dp"
-            android:text="@string/logout"
-            android:textColor="@color/status_error"
-            android:textSize="14sp"
-            app:cornerRadius="12dp"
-            app:strokeColor="@color/status_error" />
+        <!-- Fix 7: btnLogout removed — logout is now via avatar button in header -->
 
     </LinearLayout>
 </ScrollView>

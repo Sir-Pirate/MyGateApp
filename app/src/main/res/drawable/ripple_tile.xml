@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#40FFFFFF">
+
+    <item android:id="@android:id/mask">
+        <shape android:shape="rectangle">
+
+            <solid android:color="#40FFFFFF" />
+
+            <corners android:radius="12dp" />
+
+        </shape>
+    </item>
+
+</ripple>
+
+    <!--
+    #40FFFFFF = rgba(255,255,255,0.25)
+    Clearly visible on navy background
+
+    corners: 12dp matches your card cornerRadius
+    -->

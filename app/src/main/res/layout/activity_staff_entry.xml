@@ -171,7 +171,7 @@
 
             android:textStyle="bold"
 
-            app:backgroundTint="@color/brand_primary_dark"
+            app:backgroundTint="@color/card_overlay"
 
             app:cornerRadius="12dp" />
 
@@ -228,13 +228,13 @@
 
             android:visibility="gone"
 
-            app:cardBackgroundColor="@color/brand_primary_dark"
+            app:cardBackgroundColor="@color/card_overlay"
 
             app:cardCornerRadius="12dp"
 
             app:cardElevation="0dp"
 
-            app:strokeColor="@color/brand_primary_light"
+            app:strokeColor="@color/card_stroke"
 
             app:strokeWidth="1dp">
 
@@ -271,7 +271,7 @@
 
                         app:cardElevation="0dp"
 
-                        app:strokeColor="@color/brand_primary_light"
+                        app:strokeColor="@color/card_stroke"
 
                         app:strokeWidth="1dp">
 
@@ -451,7 +451,7 @@
 
                     app:cornerRadius="12dp"
 
-                    app:strokeColor="@color/brand_primary_light" />
+                    app:strokeColor="@color/card_stroke" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
