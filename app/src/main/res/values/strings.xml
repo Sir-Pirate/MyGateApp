@@ -65,4 +65,34 @@
     <string name="btn_back_home">Back to Home</string>
     <string name="btn_back">Back</string>
     <string name="btn_search">Search</string>
+
+    <!-- Profile screen -->
+    <string name="profile_title">My Profile</string>
+    <string name="profile_save">Save</string>
+    <string name="profile_initial_placeholder">/?</string>
+    <string name="profile_loading">Loading…</string>
+    <string name="profile_role_default">Resident</string>
+    <string name="profile_back_arrow">&#8592;</string>
+    <string name="profile_chevron">&#8250;</string>
+
+    <!-- Section headers -->
+    <string name="section_personal_info">Personal Information</string>
+    <string name="section_flat_details">Flat Details</string>
+    <string name="section_account">Account</string>
+
+    <!-- Field labels -->
+    <string name="label_full_name">Full Name</string>
+    <string name="label_phone">Phone Number</string>
+    <string name="label_email">Email Address</string>
+    <string name="label_email_readonly">cannot be changed</string>
+    <string name="label_flat_number">Flat Number</string>
+    <string name="label_tower">Tower / Block</string>
+
+    <!-- Account rows -->
+    <string name="action_edit_profile">Edit Profile</string>
+    <string name="action_change_password">Change Password</string>
+    <string name="action_logout">Logout</string>
+
+    <!-- App version -->
+    <string name="app_version">MyGate v1.0</string>
 </resources>

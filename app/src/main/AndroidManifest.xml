@@ -84,6 +84,14 @@
         <activity
             android:name=".StaffMenuActivity"
             android:exported="false" />
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AdminUserManagementActivity"
+            android:exported="false"
+            android:label="User Management" />
 
         <!-- messaging service firebase -->
         <service

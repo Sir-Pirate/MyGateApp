@@ -115,14 +115,37 @@
                 android:textColorHint="@color/text_on_dark_dim" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Role Spinner (unchanged ID, still works with your adapter) -->
+        <!-- Role Spinner -->
         <Spinner
             android:id="@+id/spinnerRole"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginBottom="16dp" />
 
-        <!-- Flat + Tower row -->
+        <!-- Admin Invite Code (hidden unless admin is selected) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilAdminCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxStrokeColor="#FFCA28"
+            app:hintTextColor="#FFCA28"
+            app:startIconDrawable="@android:drawable/ic_dialog_info"
+            app:startIconTint="#FFCA28">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextAdminCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Admin Invite Code"
+                android:inputType="textPassword"
+                android:textColor="@color/text_on_dark"
+                android:textColorHint="#FFCA28" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Flat + Tower row (hidden unless resident is selected) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

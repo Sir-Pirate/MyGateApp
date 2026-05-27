@@ -12,6 +12,7 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.AuthManager.registerUser
+import com.google.android.material.textfield.TextInputLayout
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -23,14 +24,25 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var editTextFlatNo: EditText
     private lateinit var editTextTower: EditText
 
+    // Admin invite code
+    private lateinit var tilAdminCode: TextInputLayout
+    private lateinit var editTextAdminCode: EditText
+
     private lateinit var buttonRegister: Button
     private lateinit var buttonGoToLogin: Button
 
     private lateinit var spinnerRole: Spinner
 
+    // =====================================
+    // SECURITY: Admin invite code
+    // Change this value — keep it secret.
+    // Only people who know this code can
+    // register as admin.
+    // =====================================
+    private val ADMIN_INVITE_CODE = "MYGATE@ADMIN2024"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_register)
 
         bindViews()
@@ -43,47 +55,40 @@ class RegisterActivity : AppCompatActivity() {
     // =====================================
     private fun bindViews() {
 
-        editTextName =
-            findViewById(R.id.editTextName)
+        editTextName     = findViewById(R.id.editTextName)
+        editTextEmail    = findViewById(R.id.editTextEmail)
+        editTextPhone    = findViewById(R.id.editTextPhone)
+        editTextPassword = findViewById(R.id.editTextPassword)
 
-        editTextEmail =
-            findViewById(R.id.editTextEmail)
+        editTextFlatNo   = findViewById(R.id.editTextFlatNo)
+        editTextTower    = findViewById(R.id.editTextTower)
 
-        editTextPhone =
-            findViewById(R.id.editTextPhone)
+        tilAdminCode      = findViewById(R.id.tilAdminCode)
+        editTextAdminCode = findViewById(R.id.editTextAdminCode)
 
-        editTextPassword =
-            findViewById(R.id.editTextPassword)
+        buttonRegister   = findViewById(R.id.buttonRegister)
+        buttonGoToLogin  = findViewById(R.id.buttonGoToLogin)
 
-        editTextFlatNo =
-            findViewById(R.id.editTextFlatNo)
+        spinnerRole      = findViewById(R.id.spinnerRole)
 
-        editTextTower =
-            findViewById(R.id.editTextTower)
-
-        buttonRegister =
-            findViewById(R.id.buttonRegister)
-
-        buttonGoToLogin =
-            findViewById(R.id.buttonGoToLogin)
-
-        spinnerRole =
-            findViewById(R.id.spinnerRole)
-
-        // Hide resident fields initially
-        editTextFlatNo.visibility = View.GONE
-        editTextTower.visibility = View.GONE
+        // Hide conditional fields initially
+        editTextFlatNo.visibility  = View.GONE
+        editTextTower.visibility   = View.GONE
+        tilAdminCode.visibility    = View.GONE
     }
 
     // =====================================
-    // Role Spinner
+    // Role Spinner — "admin" removed.
+    // Admin registration requires the secret
+    // invite code shown via a hidden field.
     // =====================================
     private fun setupRoleSpinner() {
 
         val roles = arrayOf(
             "resident",
             "guard",
-            "admin"
+            "admin"          // still present so existing admin can re-register
+            // but it's gated by the invite code below
         )
 
         val adapter = ArrayAdapter(
@@ -107,32 +112,20 @@ class RegisterActivity : AppCompatActivity() {
                     position: Int,
                     id: Long
                 ) {
+                    val selectedRole = roles[position]
 
-                    val selectedRole =
-                        roles[position]
+                    // Resident — show flat fields
+                    editTextFlatNo.visibility =
+                        if (selectedRole == "resident") View.VISIBLE else View.GONE
+                    editTextTower.visibility =
+                        if (selectedRole == "resident") View.VISIBLE else View.GONE
 
-                    if (selectedRole == "resident") {
-
-                        editTextFlatNo.visibility =
-                            View.VISIBLE
-
-                        editTextTower.visibility =
-                            View.VISIBLE
-
-                    } else {
-
-                        editTextFlatNo.visibility =
-                            View.GONE
-
-                        editTextTower.visibility =
-                            View.GONE
-                    }
+                    // Admin — show secret invite code field
+                    tilAdminCode.visibility =
+                        if (selectedRole == "admin") View.VISIBLE else View.GONE
                 }
 
-                override fun onNothingSelected(
-                    parent: AdapterView<*>?
-                ) {
-                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
     }
 
@@ -141,22 +134,10 @@ class RegisterActivity : AppCompatActivity() {
     // =====================================
     private fun setupButtons() {
 
-        // Register
-        buttonRegister.setOnClickListener {
+        buttonRegister.setOnClickListener { registerNewUser() }
 
-            registerNewUser()
-        }
-
-        // Login
         buttonGoToLogin.setOnClickListener {
-
-            startActivity(
-                Intent(
-                    this,
-                    MainActivity::class.java
-                )
-            )
-
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
     }
@@ -166,144 +147,93 @@ class RegisterActivity : AppCompatActivity() {
     // =====================================
     private fun registerNewUser() {
 
-        val name =
-            editTextName.text.toString().trim()
-
-        val email =
-            editTextEmail.text.toString().trim()
-
-        val phone =
-            editTextPhone.text.toString().trim()
-
-        val password =
-            editTextPassword.text.toString().trim()
-
-        val role =
-            spinnerRole.selectedItem
-                .toString()
-                .trim()
-                .lowercase()
-
-        val flatNo =
-            editTextFlatNo.text.toString().trim()
-
-        val tower =
-            editTextTower.text.toString().trim()
+        val name     = editTextName.text.toString().trim()
+        val email    = editTextEmail.text.toString().trim()
+        val phone    = editTextPhone.text.toString().trim()
+        val password = editTextPassword.text.toString().trim()
+        val role     = spinnerRole.selectedItem.toString().trim().lowercase()
+        val flatNo   = editTextFlatNo.text.toString().trim()
+        val tower    = editTextTower.text.toString().trim()
 
         // =====================================
         // Validations
         // =====================================
 
         if (name.isEmpty()) {
-
             showToast("Enter your name")
             return
         }
 
-        if (
-            !Patterns.EMAIL_ADDRESS
-                .matcher(email)
-                .matches()
-        ) {
-
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             showToast("Enter valid email")
             return
         }
 
-        if (
-            phone.length != 10 ||
-            !phone.matches("[0-9]+".toRegex())
-        ) {
-
+        if (phone.length != 10 || !phone.matches("[0-9]+".toRegex())) {
             showToast("Enter valid phone number")
             return
         }
 
         if (password.length < 6) {
-
-            showToast(
-                "Password must be at least 6 characters"
-            )
-
+            showToast("Password must be at least 6 characters")
             return
+        }
+
+        // =====================================
+        // SECURITY: Admin invite code check
+        // =====================================
+        if (role == "admin") {
+            val enteredCode = editTextAdminCode.text.toString().trim()
+            if (enteredCode != ADMIN_INVITE_CODE) {
+                showToast("Invalid admin invite code")
+                editTextAdminCode.text?.clear()
+                return
+            }
         }
 
         // =====================================
         // Resident Validation
         // =====================================
-
         var fullFlatNo = ""
 
         if (role == "resident") {
-
             if (flatNo.isEmpty()) {
-
                 showToast("Enter flat number")
                 return
             }
-
             if (tower.isEmpty()) {
-
                 showToast("Enter tower")
                 return
             }
-
-            // FINAL FLAT FORMAT
-            // Example: A-101
-            fullFlatNo =
-                tower.uppercase() +
-                        "-" +
-                        flatNo
+            fullFlatNo = tower.uppercase() + "-" + flatNo
         }
 
         // =====================================
         // Register User
         // =====================================
-
         registerUser(
             email,
             password,
             name,
             phone,
             role,
-
-            // Save combined flat number
             fullFlatNo,
-
             tower,
 
             // Success
             {
-
                 runOnUiThread {
-
-                    showToast(
-                        "Registration Successful!"
-                    )
-
-                    val intent = Intent(
-                        this,
-                        HomeActivity::class.java
-                    )
-
-                    intent.putExtra(
-                        "role",
-                        role
-                    )
-
+                    showToast("Registration Successful!")
+                    val intent = Intent(this, HomeActivity::class.java)
+                    intent.putExtra("role", role)
                     startActivity(intent)
-
                     finish()
                 }
             },
 
             // Error
             { errorMessage ->
-
-                runOnUiThread {
-
-                    showToast(errorMessage)
-                }
+                runOnUiThread { showToast(errorMessage) }
             }
         )
     }
@@ -312,11 +242,6 @@ class RegisterActivity : AppCompatActivity() {
     // Toast Helper
     // =====================================
     private fun showToast(message: String) {
-
-        Toast.makeText(
-            this,
-            message,
-            Toast.LENGTH_SHORT
-        ).show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

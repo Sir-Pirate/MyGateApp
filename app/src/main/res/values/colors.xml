@@ -1,43 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Brand Primary (Navy Blue) -->
-    <color name="brand_primary">#1A237E</color>
-    <color name="brand_primary_dark">#0D1B6E</color>
-    <color name="brand_primary_light">#E8EAF6</color>
+    <!-- Brand Primary (Mid Navy Blue — softer than before) -->
+    <color name="brand_primary">#1E3A5F</color>
+    <color name="brand_primary_dark">#152C4A</color>
+    <color name="brand_primary_light">#E3EDF8</color>
 
-    <!-- Delivery (Deep Orange) -->
-    <color name="accent_delivery">#E65100</color>
-    <color name="accent_delivery_light">#FBE9E7</color>
+    <!-- Accent: Sky Blue (replaces deep orange — harmonious with navy) -->
+    <color name="accent_delivery">#1976D2</color>
+    <color name="accent_delivery_light">#E3F2FD</color>
 
-    <!-- Success / Visitor (Green) -->
+    <!-- Success / Visitor (Green — unchanged) -->
     <color name="status_green">#2E7D32</color>
     <color name="status_green_dark">#1B5E20</color>
     <color name="status_green_light">#E8F5E9</color>
 
-    <!-- Error / Danger -->
+    <!-- Error / Danger (unchanged) -->
     <color name="status_error">#C62828</color>
 
-    <!-- Backgrounds -->
-    <color name="bg_page">#F0F2F5</color>
+    <!-- Backgrounds — slight blue tint on page bg -->
+    <color name="bg_page">#EEF2F7</color>
     <color name="bg_card">#FFFFFF</color>
 
-    <!-- Text -->
+    <!-- Text (unchanged) -->
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#546E7A</color>
     <color name="text_hint">#9E9E9E</color>
     <color name="text_on_dark">#FFFFFF</color>
-    <color name="text_on_dark_dim">#CFD8DC</color> <!-- #B0BEC5 = ~3.1:1 contrast ratio — FAILS WCAG AA --> <!-- #CFD8DC = ~4.8:1 contrast ratio — PASSES WCAG AA -->
+    <color name="text_on_dark_dim">#BBDEFB</color>
 
-    <!-- Divider -->
+    <!-- Divider (unchanged) -->
     <color name="divider">#E0E0E0</color>
 
-    <!-- Locker specific -->
+    <!-- Locker specific — updated to match new accent -->
     <color name="locker_id_color">#1565C0</color>
     <color name="locker_otp_color">#2E7D32</color>
-    <color name="locker_expiry_color">#E65100</color>
-    <!-- Semi-transparent white overlay card — adapts to any dark background -->
-    <color name="card_overlay">#12FFFFFF</color>
-    <color name="card_stroke">#26FFFFFF</color>
-    <color name="card_primary_overlay">#1FFFFFFF</color> <!-- rgba(255,255,255,0.12) — slightly brighter than card_overlay -->
+    <color name="locker_expiry_color">#1976D2</color>
+
+    <!-- Semi-transparent white overlay cards — bumped from 12% to 18% opacity -->
+    <color name="card_overlay">#2DFFFFFF</color>
+    <color name="card_stroke">#3DFFFFFF</color>
+    <color name="card_primary_overlay">#2DFFFFFF</color>
 
 </resources>

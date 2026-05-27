@@ -37,7 +37,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var tvWelcome: TextView
     private lateinit var tvDateTime: TextView
 
-    // Fix 7: Avatar menu replaces logout button
+    // Avatar menu
     private var btnAvatarMenu: LinearLayout? = null
     private var tvAvatarInitial: TextView? = null
 
@@ -50,11 +50,10 @@ class HomeActivity : AppCompatActivity() {
     private var btnAlerts: LinearLayout? = null
     private var btnMyProfile: LinearLayout? = null
     private var btnStaffDashboard: LinearLayout? = null
+    private var btnManageUsers: LinearLayout? = null
     private var btnLockerStatus: LinearLayout? = null
 
-    // Fix 7: btnLogout removed — logout is now triggered via btnAvatarMenu
-
-    // Fix 5: Stat TextViews for live Firestore data
+    // Live stat TextViews
     private var tvStatVisitors: TextView? = null
     private var tvStatDeliveries: TextView? = null
     private var tvStatAlerts: TextView? = null
@@ -71,15 +70,12 @@ class HomeActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        // Fix 6: Enable edge-to-edge before setContentView
         enableEdgeToEdge()
 
-        // Read role from intent
         userRole = intent.getStringExtra("role") ?: ""
 
         inflateLayoutForRole(userRole)
 
-        // Fix 6: Apply system bar insets dynamically
         ViewCompat.setOnApplyWindowInsetsListener(
             findViewById(android.R.id.content)
         ) { view, insets ->
@@ -102,14 +98,12 @@ class HomeActivity : AppCompatActivity() {
         startResidentAlertListener()
     }
 
-    // Re-check role whenever activity resumes
     override fun onResume() {
 
         super.onResume()
 
         val currentUser = auth.currentUser
 
-        // If user logged out
         if (currentUser == null) {
             goToLogin()
             return
@@ -127,14 +121,12 @@ class HomeActivity : AppCompatActivity() {
 
                 val freshRole = document.getString("role") ?: "resident"
 
-                // Reload correct layout if role changed
                 if (freshRole != userRole) {
 
                     userRole = freshRole
 
                     inflateLayoutForRole(userRole)
 
-                    // Re-apply insets after layout reload
                     ViewCompat.setOnApplyWindowInsetsListener(
                         findViewById(android.R.id.content)
                     ) { view, insets ->
@@ -153,12 +145,10 @@ class HomeActivity : AppCompatActivity() {
                     setupClickListeners()
                 }
 
-                // Fix 5: Refresh live stats on every resume
                 loadStats()
             }
     }
 
-    // Inflate role-based layout
     private fun inflateLayoutForRole(role: String) {
 
         val layout = when (role) {
@@ -171,13 +161,11 @@ class HomeActivity : AppCompatActivity() {
         setContentView(layout)
     }
 
-    // Bind all views
     private fun bindViews() {
 
         tvWelcome  = findViewById(R.id.tvWelcome)
         tvDateTime = findViewById(R.id.tvDateTime)
 
-        // Fix 7: Bind avatar menu views
         btnAvatarMenu   = findViewById(R.id.btnAvatarMenu)
         tvAvatarInitial = findViewById(R.id.tvAvatarInitial)
 
@@ -189,15 +177,14 @@ class HomeActivity : AppCompatActivity() {
         btnAlerts             = findViewById(R.id.btnAlerts)
         btnMyProfile          = findViewById(R.id.btnMyProfile)
         btnStaffDashboard     = findViewById(R.id.btnStaffDashboard)
+        btnManageUsers        = findViewById(R.id.btnManageUsers)
         btnLockerStatus       = findViewById(R.id.btnLockerStatus)
 
-        // Fix 5: Bind stat views
         tvStatVisitors   = findViewById(R.id.tvStatVisitors)
         tvStatDeliveries = findViewById(R.id.tvStatDeliveries)
         tvStatAlerts     = findViewById(R.id.tvStatAlerts)
     }
 
-    // Welcome text, date, and avatar initial
     private fun setWelcomeHeader() {
 
         val user = auth.currentUser
@@ -207,7 +194,6 @@ class HomeActivity : AppCompatActivity() {
             val name = user.email!!.substringBefore("@")
             tvWelcome.text = "Welcome, $name!"
 
-            // Fix 7: Set avatar initial from email
             val initial = name
                 .first()
                 .uppercaseChar()
@@ -224,12 +210,10 @@ class HomeActivity : AppCompatActivity() {
         tvDateTime.text = currentDate
     }
 
-    // Fix 5: Load live stats from Firestore
     private fun loadStats() {
 
         val currentUser = auth.currentUser ?: return
 
-        // Today's start timestamp
         val startOfDay = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
@@ -237,7 +221,6 @@ class HomeActivity : AppCompatActivity() {
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
 
-        // Visitors today — resident sees own flat only, guard/admin see all
         val visitorQuery = if (userRole == "resident") {
             firestore.collection("visitors")
                 .whereEqualTo("residentId", currentUser.uid)
@@ -251,7 +234,6 @@ class HomeActivity : AppCompatActivity() {
             tvStatVisitors?.text = snap.size().toString()
         }
 
-        // Pending deliveries
         firestore.collection("deliveries")
             .whereEqualTo("status", "pending")
             .get()
@@ -259,7 +241,6 @@ class HomeActivity : AppCompatActivity() {
                 tvStatDeliveries?.text = snap.size().toString()
             }
 
-        // Unread alerts for this user
         firestore.collection("alerts")
             .whereEqualTo("residentId", currentUser.uid)
             .whereEqualTo("read", false)
@@ -269,12 +250,13 @@ class HomeActivity : AppCompatActivity() {
             }
     }
 
-    // Button click listeners
     private fun setupClickListeners() {
 
-        // Fix 7: Avatar menu triggers logout dialog
+        // Avatar — opens Profile screen
         btnAvatarMenu?.setOnClickListener {
-            showLogoutDialog()
+            startActivity(
+                Intent(this, ProfileActivity::class.java)
+            )
         }
 
         btnGoToVisitorApprove?.setOnClickListener {
@@ -305,7 +287,6 @@ class HomeActivity : AppCompatActivity() {
             )
         }
 
-        // Staff routing based on role
         btnStaff?.setOnClickListener {
 
             when (userRole) {
@@ -329,6 +310,10 @@ class HomeActivity : AppCompatActivity() {
             )
         }
 
+        btnManageUsers?.setOnClickListener {
+            startActivity(Intent(this, AdminUserManagementActivity::class.java))
+        }
+
         btnStaffDashboard?.setOnClickListener {
 
             startActivity(
@@ -336,13 +321,15 @@ class HomeActivity : AppCompatActivity() {
             )
         }
 
+        // My Profile — navigates to ProfileActivity
         btnMyProfile?.setOnClickListener {
 
-            showComingSoon("My Profile")
+            startActivity(
+                Intent(this, ProfileActivity::class.java)
+            )
         }
     }
 
-    // Save FCM token to Firestore
     private fun saveFCMToken() {
 
         val currentUser = auth.currentUser ?: return
@@ -359,7 +346,6 @@ class HomeActivity : AppCompatActivity() {
             }
     }
 
-    // Listen for new resident alerts and show local notification
     private fun startResidentAlertListener() {
 
         val currentUser = auth.currentUser ?: return
@@ -385,7 +371,6 @@ class HomeActivity : AppCompatActivity() {
             }
     }
 
-    // Show local push notification
     private fun showLocalNotification(title: String, message: String) {
 
         val channelId = "resident_alerts"
@@ -412,13 +397,6 @@ class HomeActivity : AppCompatActivity() {
         manager.notify(System.currentTimeMillis().toInt(), builder.build())
     }
 
-    // Coming soon toast
-    private fun showComingSoon(feature: String) {
-
-        Toast.makeText(this, "$feature - Coming Soon!", Toast.LENGTH_SHORT).show()
-    }
-
-    // Logout confirmation dialog
     private fun showLogoutDialog() {
 
         AlertDialog.Builder(this)
@@ -432,7 +410,6 @@ class HomeActivity : AppCompatActivity() {
             .show()
     }
 
-    // Redirect to log in screen
     private fun goToLogin() {
 
         val intent = Intent(this, MainActivity::class.java)
@@ -445,7 +422,6 @@ class HomeActivity : AppCompatActivity() {
         finish()
     }
 
-    // Request notification permission (Android 13+)
     private fun requestNotificationPermission() {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
